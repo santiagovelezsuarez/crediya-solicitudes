@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Table(name = "tipo_prestamos")
 @AllArgsConstructor
@@ -15,10 +16,10 @@ import java.math.BigDecimal;
 public class TipoPrestamoEntity {
     @Id
     @Column("id_tipo_prestamo" )
-    private String id;
+    private UUID id;
     private String nombre;
     private BigDecimal montoMinimo;
     private BigDecimal montoMaximo;
-    private Double tasaInteres;
+    private BigDecimal tasaInteres;
     private boolean validacionAutomatica;
 }

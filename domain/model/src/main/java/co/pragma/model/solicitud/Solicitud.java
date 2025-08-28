@@ -1,22 +1,20 @@
 package co.pragma.model.solicitud;
-import lombok.Builder;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
+@ToString
 public class Solicitud {
-    private String id;
-    private String usuarioId;
-    private String estado;
+    private UUID id;
+    private UUID idUsuario;
+    private Integer idEstado;
     private BigDecimal monto;
-    private int plazoEnMeses;
-    private String tipoPrestamo;
+    private Integer plazoEnMeses;
+    private UUID idTipoPrestamo;
 }

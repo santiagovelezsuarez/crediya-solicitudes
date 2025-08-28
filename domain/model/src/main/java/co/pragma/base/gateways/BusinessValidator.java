@@ -1,4 +1,4 @@
-package co.pragma.common.gateways;
+package co.pragma.base.gateways;
 
 import reactor.core.publisher.Mono;
 

@@ -1,24 +1,39 @@
 package co.pragma.r2dbc.adapter;
 
+import co.pragma.model.estadosolicitud.EstadoSolicitud;
+import co.pragma.model.estadosolicitud.gateways.EstadoSolicitudRepository;
+import co.pragma.r2dbc.entity.EstadoSolicitudEntity;
 import co.pragma.r2dbc.helper.ReactiveAdapterOperations;
-import co.pragma.r2dbc.repository.MyReactiveRepository;
+import co.pragma.r2dbc.repository.EstadoSolicitudReactiveRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Mono;
 
+@Slf4j
 @Repository
 public class EstadoSolicitudReactiveRepositoryAdapter extends ReactiveAdapterOperations<
-    Object/* change for domain model */,
-    Object/* change for adapter model */,
-    String,
-        MyReactiveRepository
-> {
-    public EstadoSolicitudReactiveRepositoryAdapter(MyReactiveRepository repository, ObjectMapper mapper) {
-        /**
-         *  Could be use mapper.mapBuilder if your domain model implement builder pattern
-         *  super(repository, mapper, d -> mapper.mapBuilder(d,ObjectModel.ObjectModelBuilder.class).build());
-         *  Or using mapper.map with the class of the object model
-         */
-        super(repository, mapper, d -> mapper.map(d, Object.class/* change for domain model */));
+        EstadoSolicitud,
+        EstadoSolicitudEntity,
+        Integer,
+        EstadoSolicitudReactiveRepository
+> implements EstadoSolicitudRepository {
+
+    public EstadoSolicitudReactiveRepositoryAdapter(EstadoSolicitudReactiveRepository repository, ObjectMapper mapper) {
+        super(repository, mapper, d -> mapper.map(d, EstadoSolicitud.class));
     }
 
+
+    @Override
+    public Mono<EstadoSolicitud> findByNombre(String nombre) {
+        log.info("Buscando estado de solicitud por nombre: {}", nombre);
+        return repository.findByNombre(nombre)
+                .map(entity -> mapper.map(entity, EstadoSolicitud.class))
+                .doOnNext(entity -> log.info("Estado de solicitud encontrado: {}", entity))
+                .switchIfEmpty(Mono.defer(() -> {
+                    log.info("No se encontró estado de solicitud con nombre={}", nombre);
+                    return Mono.empty();
+                }))
+                .doOnError(e -> log.error("Error al buscar estado de solicitud con nombre {} : {}", nombre, e.getMessage()));
+    }
 }

@@ -1,7 +1,7 @@
 package co.pragma.r2dbc;
 
 import co.pragma.r2dbc.adapter.SolicitudReactiveRepositoryAdapter;
-import co.pragma.r2dbc.repository.MyReactiveRepository;
+import co.pragma.r2dbc.repository.SolicitudReactiveRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,7 +24,7 @@ class MyReactiveRepositoryAdapterTest {
     SolicitudReactiveRepositoryAdapter repositoryAdapter;
 
     @Mock
-    MyReactiveRepository repository;
+    SolicitudReactiveRepository repository;
 
     @Mock
     ObjectMapper mapper;

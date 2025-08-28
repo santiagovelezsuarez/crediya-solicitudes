@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class EstadoSolicitud {
-    private String id;
+    private int id;
     private String nombre;
     private String descripcion;
 }

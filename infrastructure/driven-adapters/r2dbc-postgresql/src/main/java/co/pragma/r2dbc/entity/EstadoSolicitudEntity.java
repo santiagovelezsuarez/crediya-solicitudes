@@ -11,10 +11,10 @@ import org.springframework.data.relational.core.mapping.Table;
 @Getter
 @Setter
 @Builder
-public class EstadoEntity {
+public class EstadoSolicitudEntity {
     @Id
     @Column("id_estado" )
-    private String id;
+    private short id;
     private String nombre;
     private String descripcion;
 }
