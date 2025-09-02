@@ -13,11 +13,11 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-public class SolicitudEntity {
+public class SolicitudPrestamoEntity {
     @Id
     @Column("id_solicitud")
     private UUID id;
-    private  UUID idUsuario;
+    private  UUID idCliente;
     private short idEstado;
     private BigDecimal monto;
     private int plazoEnMeses;

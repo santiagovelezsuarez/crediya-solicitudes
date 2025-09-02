@@ -1,18 +1,16 @@
-package co.pragma.model.solicitud;
+package co.pragma.model.solicitudprestamo;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-@ToString
-public class Solicitud {
+public class SolicitudPrestamo {
     private UUID id;
-    private UUID idUsuario;
+    private UUID idCliente;
     private Integer idEstado;
     private BigDecimal monto;
     private Integer plazoEnMeses;

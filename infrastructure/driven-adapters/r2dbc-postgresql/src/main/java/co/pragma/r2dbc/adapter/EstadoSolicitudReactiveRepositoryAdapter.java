@@ -23,6 +23,19 @@ public class EstadoSolicitudReactiveRepositoryAdapter extends ReactiveAdapterOpe
         super(repository, mapper, d -> mapper.map(d, EstadoSolicitud.class));
     }
 
+    @Override
+    public Mono<EstadoSolicitud> findById(int id) {
+        log.info("Buscando estado de solicitud por ID: {}", id);
+        return repository.findById(id)
+                .map(entity -> mapper.map(entity, EstadoSolicitud.class))
+                .doOnNext(entity -> log.info("Estado de solicitud encontrado: {}", entity))
+                .switchIfEmpty(Mono.defer(() -> {
+                    log.info("No se encontró estado de solicitud con ID={}", id);
+                    return Mono.empty();
+                }))
+                .doOnError(e -> log.error("Error al buscar estado de solicitud con ID {} : {}", id, e.getMessage()));
+    }
+
 
     @Override
     public Mono<EstadoSolicitud> findByNombre(String nombre) {

@@ -21,8 +21,6 @@ subprojects {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    //build.dependsOn 'pitest'
-
     test {
         useJUnitPlatform()
     }
@@ -79,6 +77,14 @@ subprojects {
             csv.setRequired false
             html.setOutputLocation layout.buildDirectory.dir("reports/jacocoHtml")
         }
+        afterEvaluate {
+            classDirectories.setFrom(files(classDirectories.files.collect {
+                fileTree(dir: it, exclude: [
+                        '**/Main*.*',
+                        '**/*MapperImpl*'
+                ])
+            }))
+        }
     }
 
 }
@@ -86,19 +92,6 @@ subprojects {
 jacoco {
     toolVersion = "${jacocoVersion}"
     reportsDirectory.set(layout.buildDirectory.dir("reports"))
-}
-
-tasks.register('jacocoMergedReport', JacocoReport) {
-    dependsOn = [test, subprojects.jacocoTestReport, pitestReportAggregate]
-    additionalSourceDirs.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
-    sourceDirectories.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
-    classDirectories.setFrom files(subprojects.sourceSets.main.output)
-    executionData.setFrom project.fileTree(dir: '.', include: '**/build/jacoco/test.exec')
-    reports {
-        xml.setRequired true
-        csv.setRequired false
-        html.setRequired true
-    }
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -129,4 +122,29 @@ pitestReportAggregate {
 
 tasks.named('wrapper') {
     gradleVersion = '8.14.3'
+}
+
+tasks.register('jacocoMergedReport', JacocoReport) {
+    dependsOn subprojects.test, subprojects.jacocoTestReport
+
+    additionalSourceDirs.from files(subprojects.sourceSets.main.allSource.srcDirs)
+    sourceDirectories.from files(subprojects.sourceSets.main.allSource.srcDirs)
+    classDirectories.from files(subprojects.sourceSets.main.output).collect {
+        fileTree(dir: it, exclude: [
+                '**/Main*.*',
+                '**/*MapperImpl*',
+                '**/*Enum*',
+        ])
+    }
+
+    executionData.from files(subprojects.collect {
+        it.fileTree(dir: "${it.buildDir}/jacoco", include: ["*.exec"])
+    })
+
+    reports {
+        xml.required = true
+        xml.outputLocation = layout.buildDirectory.file("reports/jacocoMergedReport/jacocoMergedReport.xml")
+        html.required = true
+        html.outputLocation = layout.buildDirectory.dir("reports/jacocoMergedReport/html")
+    }
 }

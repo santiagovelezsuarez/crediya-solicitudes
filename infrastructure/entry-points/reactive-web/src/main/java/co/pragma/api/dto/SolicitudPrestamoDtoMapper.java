@@ -1,6 +1,6 @@
 package co.pragma.api.dto;
 
-import co.pragma.model.solicitud.Solicitud;
+import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 public interface SolicitudPrestamoDtoMapper {
 
     @Mapping(target = "id", ignore = true)
-    Solicitud toModel(SolicitudPrestamoRequest request);
+    SolicitudPrestamo toModel(SolicitarPrestamoDTO request);
 
-    SolicitudResponse toResponse(Solicitud solicitud);
+    SolicitudPrestamoResponse toResponse(SolicitudPrestamo solicitud);
 }

@@ -26,15 +26,28 @@ public class TipoPrestamoReactiveRepositoryAdapter extends ReactiveAdapterOperat
     }
 
     @Override
-    public Mono<TipoPrestamo> findById(UUID id) {
-        log.info("Buscando tipo de préstamo por Id: {}", id);
-        return repository.findById(id)
+    public Mono<TipoPrestamo> findById(String id) {
+        log.info("TipoPrestamoReactiveRepositoryAdapter.findById {}", id);
+        return repository.findById(UUID.fromString(id))
                 .map(entity -> mapper.map(entity, TipoPrestamo.class))
                 .doOnNext(entity -> log.info("Tipo de préstamo encontrado: {}", entity))
                 .switchIfEmpty(Mono.defer(() -> {
-                    log.info("No se encontró tipo de préstamo con Id={}", id);
+                    log.info("No se encontró tipo de préstamo con ID={}", id);
                     return Mono.empty();
                 }))
-                .doOnError(e -> log.error("Error al buscar tipo de préstamo con nombre {} : {}", id, e.getMessage()));
+                .doOnError(e -> log.error("Error al buscar tipo de préstamo con ID {} : {}", id, e.getMessage()));
+    }
+
+    @Override
+    public Mono<TipoPrestamo> findByNombre(String nombre) {
+        log.info("Buscando tipo de préstamo por NOMBRE: {}", nombre);
+        return repository.findByNombre(nombre)
+                .map(prestamo -> mapper.map(prestamo, TipoPrestamo.class))
+                .doOnNext(prestamo -> log.info("Tipo de préstamo encontrado: {}", prestamo.getId()))
+                .switchIfEmpty(Mono.defer(() -> {
+                    log.info("No se encontró tipo de préstamo con nombre={}", nombre);
+                    return Mono.empty();
+                }))
+                .doOnError(e -> log.error("Error al buscar tipo de préstamo con nombre {} : {}", nombre, e.getMessage()));
     }
 }
