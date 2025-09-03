@@ -1,12 +1,10 @@
 package co.pragma.usecase.solicitud;
 
-import co.pragma.exception.ClienteNotFoundException;
-import co.pragma.exception.TipoPrestamoNotFoundException;
-import co.pragma.model.cliente.Cliente;
 import co.pragma.model.cliente.DocumentoIdentidadVO;
+import co.pragma.model.estadosolicitud.EstadoSolicitud;
+import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
-import co.pragma.model.tipoprestamo.TipoPrestamo;
 import co.pragma.model.tipoprestamo.TipoPrestamoVO;
 import co.pragma.usecase.solicitud.businessrules.ClienteValidator;
 import co.pragma.usecase.solicitud.businessrules.TipoPrestamoValidator;
@@ -14,9 +12,8 @@ import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
-public class SolicitudUseCase {
+public class SolicitudPrestamoUseCase {
 
-    private static final int DEFAULT_ESTADO_ID = 1;
     private final SolicitudPrestamoRepository solicitudPrestamoRepository;
     private final TipoPrestamoValidator tipoPrestamoValidator;
     private final ClienteValidator clienteValidator;
@@ -32,12 +29,13 @@ public class SolicitudUseCase {
         ).map(tuple -> {
             var cliente = tuple.getT1();
             var tipoPrestamo = tuple.getT2();
+            var estadoInicial = EstadoSolicitudCodigo.PENDIENTE_REVISION;
 
-            solicitud.setIdCliente(cliente.getId());
-            solicitud.setIdTipoPrestamo(tipoPrestamo.getId());
-            solicitud.setIdEstado(DEFAULT_ESTADO_ID);
-
-            return solicitud;
+            return solicitud.toBuilder()
+                    .idCliente(cliente.getId())
+                    .idTipoPrestamo(tipoPrestamo.getId())
+                    .estado(estadoInicial)
+                    .build();
         }).flatMap(solicitudPrestamoRepository::save);
     }
 }

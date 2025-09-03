@@ -1,4 +1,6 @@
 package co.pragma.model.solicitudprestamo;
+import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
+import co.pragma.model.tipoprestamo.TipoPrestamoVO;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -11,8 +13,8 @@ import java.util.UUID;
 public class SolicitudPrestamo {
     private UUID id;
     private UUID idCliente;
-    private Integer idEstado;
+    private UUID idTipoPrestamo;
     private BigDecimal monto;
     private Integer plazoEnMeses;
-    private UUID idTipoPrestamo;
+    private EstadoSolicitudCodigo estado;
 }

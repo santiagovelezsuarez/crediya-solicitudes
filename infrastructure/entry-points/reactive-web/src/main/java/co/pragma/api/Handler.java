@@ -7,14 +7,12 @@ import co.pragma.api.dto.SolicitudPrestamoResponse;
 import co.pragma.model.cliente.DocumentoIdentidadVO;
 import co.pragma.model.estadosolicitud.gateways.EstadoSolicitudRepository;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
-import co.pragma.model.tipoprestamo.TipoPrestamo;
 import co.pragma.model.tipoprestamo.TipoPrestamoVO;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
-import co.pragma.usecase.solicitud.SolicitudUseCase;
+import co.pragma.usecase.solicitud.SolicitudPrestamoUseCase;
 import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.actuate.endpoint.InvalidEndpointRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -27,7 +25,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class Handler {
 
-    private final SolicitudUseCase solicitudUseCase;
+    private final SolicitudPrestamoUseCase solicitudPrestamoUseCase;
     private final SolicitudPrestamoDtoMapper dtoMapper;
     private final Validator validator;
     private final TipoPrestamoRepository tipoPrestamoRepository;
@@ -43,7 +41,7 @@ public class Handler {
                     var documento = new DocumentoIdentidadVO(dto.getTipoDocumento(), dto.getNumeroDocumento());
                     var tipoPrestamoNombre = new TipoPrestamoVO(dto.getTipoPrestamo());
 
-                    return solicitudUseCase.createSolicitud(solicitud, documento, tipoPrestamoNombre);
+                    return solicitudPrestamoUseCase.createSolicitud(solicitud, documento, tipoPrestamoNombre);
                 })
                 .flatMap(this::mapToResponse)
                 .doOnNext(result -> log.info("Solicitud creada exitosamente con ID: {}", result.id()))
@@ -56,7 +54,7 @@ public class Handler {
     private Mono<SolicitudPrestamoResponse> mapToResponse(SolicitudPrestamo solicitud) {
         return Mono.zip(
                 tipoPrestamoRepository.findById(String.valueOf(solicitud.getIdTipoPrestamo())),
-                estadoPrestamoRepository.findById(solicitud.getIdEstado())
+                estadoPrestamoRepository.findByNombre(solicitud.getEstado().name())
         ).map(tuple -> {
             var tipoPrestamo = tuple.getT1();
             var estado = tuple.getT2();
@@ -66,7 +64,7 @@ public class Handler {
                     solicitud.getMonto(),
                     solicitud.getPlazoEnMeses(),
                     tipoPrestamo.getNombre(),
-                    estado.getNombre()
+                    estado.getNombre().name()
             );
         });
     }

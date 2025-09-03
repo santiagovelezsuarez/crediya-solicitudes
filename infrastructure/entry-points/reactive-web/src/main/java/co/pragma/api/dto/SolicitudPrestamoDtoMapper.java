@@ -8,7 +8,11 @@ import org.mapstruct.Mapping;
 public interface SolicitudPrestamoDtoMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "idCliente", ignore = true)
+    @Mapping(target = "idTipoPrestamo", ignore = true)
+    @Mapping(target = "estado", ignore = true)
     SolicitudPrestamo toModel(SolicitarPrestamoDTO request);
 
+    @Mapping(target = "estado", expression = "java(solicitud.getEstado().name())")
     SolicitudPrestamoResponse toResponse(SolicitudPrestamo solicitud);
 }

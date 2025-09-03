@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 public class EstadoSolicitudReactiveRepositoryAdapter extends ReactiveAdapterOperations<
         EstadoSolicitud,
         EstadoSolicitudEntity,
-        Integer,
+        Short,
         EstadoSolicitudReactiveRepository
 > implements EstadoSolicitudRepository {
 
@@ -24,7 +24,7 @@ public class EstadoSolicitudReactiveRepositoryAdapter extends ReactiveAdapterOpe
     }
 
     @Override
-    public Mono<EstadoSolicitud> findById(int id) {
+    public Mono<EstadoSolicitud> findById(short id) {
         log.info("Buscando estado de solicitud por ID: {}", id);
         return repository.findById(id)
                 .map(entity -> mapper.map(entity, EstadoSolicitud.class))
