@@ -3,6 +3,7 @@ package co.pragma.usecase.solicitud;
 import co.pragma.exception.ClienteNotFoundException;
 import co.pragma.model.cliente.Cliente;
 import co.pragma.model.cliente.DocumentoIdentidadVO;
+import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
 import co.pragma.model.tipoprestamo.TipoPrestamo;
@@ -79,7 +80,7 @@ public class SolicitudPrestamoUseCaseTest {
                 .expectNextMatches(saved ->
                         saved.getIdCliente().equals(cliente.getId()) &&
                                 saved.getIdTipoPrestamo().equals(tipoPrestamo.getId()) &&
-                                saved.getIdEstado() == 1
+                                saved.getEstado().equals(EstadoSolicitudCodigo.PENDIENTE_REVISION)
                 )
                 .verifyComplete();
 

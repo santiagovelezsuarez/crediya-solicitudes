@@ -1,6 +1,5 @@
 package co.pragma.model.solicitudprestamo;
 import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
-import co.pragma.model.tipoprestamo.TipoPrestamoVO;
 import lombok.*;
 
 import java.math.BigDecimal;

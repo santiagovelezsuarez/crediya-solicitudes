@@ -11,6 +11,11 @@ spring:
       path: "/h2"
   profiles:
     include: null
+  http:
+    encoding:
+      enabled: true
+      charset: "UTF-8"
+      force: true
 management:
   endpoints:
     web:

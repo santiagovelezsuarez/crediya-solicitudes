@@ -1,13 +1,19 @@
 package co.pragma.config;
 
+import co.pragma.model.cliente.gateways.UsuariosPort;
+import co.pragma.model.estadosolicitud.gateways.EstadoSolicitudRepository;
+import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
+import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
+import co.pragma.usecase.solicitud.SolicitudPrestamoUseCase;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class UseCasesConfigTest {
+class UseCasesConfigTest {
 
     @Test
     void testUseCaseBeansExist() {
@@ -34,6 +40,33 @@ public class UseCasesConfigTest {
         public MyUseCase myUseCase() {
             return new MyUseCase();
         }
+
+        @Bean
+        public UsuariosPort usuariosPort() {
+            return Mockito.mock(UsuariosPort.class);
+        }
+
+        @Bean
+        public EstadoSolicitudRepository estadoSolicitudRepository() {
+            return Mockito.mock(EstadoSolicitudRepository.class);
+        }
+
+        @Bean
+        public SolicitudPrestamoRepository solicitudPrestamoRepository() {
+            return Mockito.mock(SolicitudPrestamoRepository.class);
+        }
+
+        @Bean
+        public TipoPrestamoRepository tipoPrestamoRepository() {
+            return Mockito.mock(TipoPrestamoRepository.class);
+        }
+
+        @Bean
+        public SolicitudPrestamoUseCase solicitudPrestamoUseCase() {
+            return Mockito.mock(SolicitudPrestamoUseCase.class);
+        }
+
+
     }
 
     static class MyUseCase {

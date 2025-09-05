@@ -6,7 +6,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class EstadoSolicitud {
-    private int id;
+    private Integer id;
     private EstadoSolicitudCodigo nombre;
     private String descripcion;
 }

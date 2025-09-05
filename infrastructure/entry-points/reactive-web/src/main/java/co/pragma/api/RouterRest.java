@@ -16,6 +16,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
+
+import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 
@@ -54,5 +56,27 @@ public class RouterRest {
     })
     public RouterFunction<ServerResponse> solicitudPrestamoRoutes(Handler handler) {
         return route(POST("/api/v1/solicitud-prestamo"), handler::listenCreateSolicitud);
+    }
+
+    @Bean
+    @RouterOperations(
+            @RouterOperation(
+                    path = "/api/health",
+                    produces = {MediaType.TEXT_PLAIN_VALUE},
+                    method = RequestMethod.GET,
+                    operation = @Operation(
+                            operationId = "healthCheck",
+                            summary = "Health check",
+                            description = "Verifica que el servicio está disponible",
+                            tags = {"Health"},
+                            responses = {
+                                    @ApiResponse(responseCode = "200", description = "Servicio disponible")
+                            }
+                    )
+            )
+    )
+    public RouterFunction<ServerResponse> healthRoutes() {
+        return route(GET("/api/health"),
+                request -> ServerResponse.ok().bodyValue("OK"));
     }
 }

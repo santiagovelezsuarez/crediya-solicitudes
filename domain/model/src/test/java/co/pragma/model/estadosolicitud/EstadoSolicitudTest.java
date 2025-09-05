@@ -10,12 +10,12 @@ class EstadoSolicitudTest {
     void shouldBuildEstadoSolicitudCorrectly() {
         EstadoSolicitud estado = EstadoSolicitud.builder()
                 .id(1)
-                .nombre("PENDIENTE")
+                .nombre(EstadoSolicitudCodigo.PENDIENTE_REVISION)
                 .descripcion("Solicitud en espera de aprobación")
                 .build();
 
         assertEquals(1, estado.getId());
-        assertEquals("PENDIENTE", estado.getNombre());
+        assertEquals("PENDIENTE_REVISION", estado.getNombre().name());
         assertEquals("Solicitud en espera de aprobación", estado.getDescripcion());
     }
 }

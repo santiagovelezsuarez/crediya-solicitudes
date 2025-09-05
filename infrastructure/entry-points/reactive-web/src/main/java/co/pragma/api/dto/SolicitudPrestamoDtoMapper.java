@@ -14,5 +14,8 @@ public interface SolicitudPrestamoDtoMapper {
     SolicitudPrestamo toModel(SolicitarPrestamoDTO request);
 
     @Mapping(target = "estado", expression = "java(solicitud.getEstado().name())")
+    @Mapping(target = "tipoPrestamo", ignore = true)
     SolicitudPrestamoResponse toResponse(SolicitudPrestamo solicitud);
+
+
 }

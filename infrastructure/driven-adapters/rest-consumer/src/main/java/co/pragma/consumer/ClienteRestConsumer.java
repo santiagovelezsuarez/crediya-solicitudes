@@ -24,7 +24,7 @@ public class ClienteRestConsumer implements UsuariosPort {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/usuario/{tipo}/{numero}")
+                        .path("/usuarios/{tipo}/{numero}")
                         .build(documentoIdentidad.tipoDocumento(), documentoIdentidad.numeroDocumento()))
                 .retrieve()
                 .onStatus(HttpStatus.NOT_FOUND::equals, response ->

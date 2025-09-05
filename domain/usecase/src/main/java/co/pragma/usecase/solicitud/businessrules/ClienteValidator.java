@@ -1,5 +1,6 @@
 package co.pragma.usecase.solicitud.businessrules;
 
+import co.pragma.exception.ClienteNotFoundException;
 import co.pragma.gateways.BusinessValidator;
 import co.pragma.model.cliente.Cliente;
 import co.pragma.model.cliente.DocumentoIdentidadVO;
@@ -15,6 +16,6 @@ public class ClienteValidator implements BusinessValidator<DocumentoIdentidadVO,
     @Override
     public Mono<Cliente> validate(DocumentoIdentidadVO documentoIdentidad) {
         return usuariosPort.findClienteByDocumento(documentoIdentidad)
-                .switchIfEmpty(Mono.error(new RuntimeException("El cliente no está registrado")));
+                .switchIfEmpty(Mono.error(new ClienteNotFoundException("El cliente no está registrado")));
     }
 }
