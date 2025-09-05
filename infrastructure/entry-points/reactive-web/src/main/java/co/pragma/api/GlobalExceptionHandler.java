@@ -1,8 +1,10 @@
 package co.pragma.api;
 
-import co.pragma.base.exception.BusinessException;
-import co.pragma.base.exception.TipoPrestamoNotExistsException;
-import common.api.dto.ErrorResponse;
+import co.pragma.api.dto.DtoValidationException;
+import co.pragma.api.dto.ErrorResponse;
+import co.pragma.exception.BusinessException;
+import co.pragma.exception.DomainError;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,41 +17,34 @@ import java.time.Instant;
 import java.util.List;
 
 @Slf4j
+@RequiredArgsConstructor
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(TipoPrestamoNotExistsException.class)
-    public Mono<ResponseEntity<ErrorResponse>> handleTipoPrestamoNotExistsException(TipoPrestamoNotExistsException ex, ServerHttpRequest request) {
-        log.info("TipoPrestamoNotExistsException: {}", ex.getMessage());
-        ErrorResponse error = ErrorResponse.builder()
-                .timestamp(Instant.now())
-                .status(HttpStatus.CONFLICT.value())
-                .error("TIPO_PRESTAMO_NOT_EXISTS")
-                .message(ex.getMessage())
-                .path(request.getPath().value())
-                .build();
-        return Mono.just(ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(error));
-    }
+    private final ErrorCodeHttpMapper errorCodeHttpMapper;
 
     @ExceptionHandler(BusinessException.class)
-    public Mono<ResponseEntity<ErrorResponse>> handleBusinessException(BusinessException ex, ServerHttpRequest request) {
-        log.warn("BusinessException: {}", ex.getMessage());
+    public Mono<ResponseEntity<ErrorResponse>> handle(BusinessException ex, ServerHttpRequest request) {
+        DomainError domainError = DomainError.from(ex);
+        HttpStatus status = errorCodeHttpMapper.toHttpStatus(ex.getCode());
+
+        log.warn("BusinessException: {} - {}", domainError.code(), ex.getMessage());
+
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(Instant.now())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error("BUSINESS_ERROR")
-                .message(ex.getMessage())
+                .status(status.value())
+                .error(domainError.code())
+                .message(domainError.message())
                 .path(request.getPath().value())
                 .build();
+
         return Mono.just(ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(status)
                 .body(error));
     }
 
-    @ExceptionHandler(common.api.exception.DtoValidationException.class)
-    public Mono<ResponseEntity<ErrorResponse>> handleValidationException(common.api.exception.DtoValidationException ex, ServerHttpRequest request) {
+    @ExceptionHandler(DtoValidationException.class)
+    public Mono<ResponseEntity<ErrorResponse>> handleValidationException(DtoValidationException ex, ServerHttpRequest request) {
         log.info("DtoValidationException: {}", ex.getMessage());
 
         List<ErrorResponse.FieldError> fieldErrors = ex.getErrors().stream()
@@ -65,35 +60,39 @@ public class GlobalExceptionHandler {
                 .validationErrors(fieldErrors)
                 .build();
 
-        return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response));
-
+        return Mono.just(
+                ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(response)
+        );
     }
 
-    @ExceptionHandler(ServerWebInputException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidUUID(ServerWebInputException ex, ServerHttpRequest request) {
-        log.info("ServerWebInputException: {}", ex.getMessage());
+    @ExceptionHandler(org.springframework.web.server.ServerWebInputException.class)
+    public Mono<ResponseEntity<ErrorResponse>> handleWebInputException(ServerWebInputException ex, ServerHttpRequest request) {
+        log.warn("ServerWebInputException: {}", ex.getMessage());
+
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(Instant.now())
                 .status(HttpStatus.BAD_REQUEST.value())
-                .error("BAD_REQUEST")
-                .message("Invalid input: " + ex.getReason())
+                .error("INVALID_REQUEST_BODY")
+                .message("El cuerpo de la solicitud está vacío o es inválido.")
                 .path(request.getPath().value())
                 .build();
-        return ResponseEntity
+
+        return Mono.just(ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(error);
+                .body(error));
     }
 
-
     @ExceptionHandler(Exception.class)
-    public Mono<ResponseEntity<ErrorResponse>> handleGeneralException(Exception ex, ServerHttpRequest request) {
+    public Mono<ResponseEntity<ErrorResponse>> handleGeneralException(Exception ex) {
         log.error("Unexpected error: ", ex);
         ErrorResponse error = ErrorResponse.builder()
-                .timestamp(Instant.now())
+                .timestamp(java.time.Instant.now())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .error("INTERNAL_SERVER_ERROR")
                 .message("An unexpected error occurred.")
-                .path(request.getPath().value())
+                .path("")
                 .build();
         return Mono.just(ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)

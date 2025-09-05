@@ -9,4 +9,5 @@ import java.util.UUID;
 
 public interface TipoPrestamoReactiveRepository extends ReactiveCrudRepository<TipoPrestamoEntity, UUID>, ReactiveQueryByExampleExecutor<TipoPrestamoEntity> {
 
+    Mono<TipoPrestamoEntity> findByNombre(String nombre);
 }
