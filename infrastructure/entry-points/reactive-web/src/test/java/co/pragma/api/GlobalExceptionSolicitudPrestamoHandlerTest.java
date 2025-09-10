@@ -1,9 +1,8 @@
 package co.pragma.api;
 
 import co.pragma.api.dto.ErrorResponse;
-import co.pragma.exception.ClienteNotFoundException;
-import co.pragma.exception.DomainError;
-import co.pragma.exception.ErrorCode;
+import co.pragma.exception.business.ClienteNotFoundException;
+import co.pragma.exception.business.TipoPrestamoNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +15,7 @@ import reactor.test.StepVerifier;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-public class GlobalExceptionHandlerTest {
+public class GlobalExceptionSolicitudPrestamoHandlerTest {
 
     private final ErrorCodeHttpMapper errorCodeHttpMapper = new ErrorCodeHttpMapper();
     private final GlobalExceptionHandler handler = new GlobalExceptionHandler(errorCodeHttpMapper);
@@ -42,7 +41,7 @@ public class GlobalExceptionHandlerTest {
 
     @Test
     void shouldHandleTipoPrestamoNotFound() {
-        var ex = new co.pragma.exception.TipoPrestamoNotFoundException("Tipo de préstamo no encontrado");
+        var ex = new TipoPrestamoNotFoundException("Tipo de préstamo no encontrado");
         ServerHttpRequest request = MockServerHttpRequest.get("/prestamos").build();
 
         var result = handler.handle(ex, request);

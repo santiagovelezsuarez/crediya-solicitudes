@@ -1,8 +1,9 @@
 package co.pragma.r2dbc.adapter;
 
+import co.pragma.error.ErrorCode;
+import co.pragma.exception.InfrastructureException;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
-import co.pragma.r2dbc.entity.SolicitudPrestamoEntity;
 import co.pragma.r2dbc.mapper.SolicitudPrestamoMapper;
 import co.pragma.r2dbc.repository.SolicitudReactiveRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,14 +21,11 @@ public class SolicitudPrestamoReactiveRepositoryAdapter implements SolicitudPres
 
     @Override
     public Mono<SolicitudPrestamo> save(SolicitudPrestamo solicitud) {
-        log.info("Registrando solicitud: {}", solicitud);
-
-        SolicitudPrestamoEntity entity = mapper.toEntity(solicitud);
-
-        return repository.save(entity)
-                .map(mapper::toModel)
-                .doOnSuccess(s -> log.info("Solicitud registrada con éxito: {}", s))
-                .doOnError(e -> log.error("Error al registrar solicitud: {}", e.getMessage()));
+        log.debug("Registrando solicitud: {}", solicitud);
+        return repository.save(mapper.toEntity(solicitud))
+                .map(mapper::toDomain)
+                .doOnSuccess(s -> log.trace("Solicitud registrada con éxito: {}", s.getId()))
+                .onErrorMap(ex -> new InfrastructureException(ErrorCode.DB_ERROR.name(), ex));
     }
 
 }

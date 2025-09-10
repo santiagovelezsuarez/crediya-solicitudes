@@ -3,7 +3,6 @@ package co.pragma.usecase.solicitud.validators;
 import co.pragma.model.cliente.Cliente;
 import co.pragma.model.cliente.DocumentoIdentidadVO;
 import co.pragma.model.cliente.gateways.UsuariosPort;
-import co.pragma.usecase.solicitud.businessrules.ClienteValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;

@@ -1,5 +1,7 @@
 package co.pragma.r2dbc.adapter;
 
+import co.pragma.error.ErrorCode;
+import co.pragma.exception.InfrastructureException;
 import co.pragma.model.estadosolicitud.EstadoSolicitud;
 import co.pragma.model.estadosolicitud.gateways.EstadoSolicitudRepository;
 import co.pragma.r2dbc.entity.EstadoSolicitudEntity;
@@ -25,28 +27,19 @@ public class EstadoSolicitudReactiveRepositoryAdapter extends ReactiveAdapterOpe
 
     @Override
     public Mono<EstadoSolicitud> findById(short id) {
-        log.info("Buscando estado de solicitud por ID: {}", id);
+        log.debug("Buscando estado de solicitud por ID: {}", id);
         return repository.findById(id)
                 .map(entity -> mapper.map(entity, EstadoSolicitud.class))
-                .doOnNext(entity -> log.info("Estado de solicitud encontrado: {}", entity))
-                .switchIfEmpty(Mono.defer(() -> {
-                    log.info("No se encontró estado de solicitud con ID={}", id);
-                    return Mono.empty();
-                }))
-                .doOnError(e -> log.error("Error al buscar estado de solicitud con ID {} : {}", id, e.getMessage()));
+                .doOnNext(entity -> log.trace("findById - Estado de solicitud encontrado: {}", entity))
+                .onErrorMap(ex -> new InfrastructureException(ErrorCode.DB_ERROR.name(), ex));
     }
-
 
     @Override
     public Mono<EstadoSolicitud> findByNombre(String nombre) {
-        log.info("Buscando estado de solicitud por nombre: {}", nombre);
+        log.debug("Buscando estado de solicitud por nombre: {}", nombre);
         return repository.findByNombre(nombre)
                 .map(entity -> mapper.map(entity, EstadoSolicitud.class))
-                .doOnNext(entity -> log.info("Estado de solicitud encontrado: {}", entity))
-                .switchIfEmpty(Mono.defer(() -> {
-                    log.info("No se encontró estado de solicitud con nombre={}", nombre);
-                    return Mono.empty();
-                }))
-                .doOnError(e -> log.error("Error al buscar estado de solicitud con nombre {} : {}", nombre, e.getMessage()));
+                .doOnNext(entity -> log.trace("findByNombre - Estado de solicitud encontrado: {}", entity))
+                .onErrorMap(ex -> new InfrastructureException(ErrorCode.DB_ERROR.name(), ex));
     }
 }

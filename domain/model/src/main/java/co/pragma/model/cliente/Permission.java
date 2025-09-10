@@ -1,0 +1,10 @@
+package co.pragma.model.cliente;
+
+public enum Permission {
+    REGISTRAR_USUARIO,
+    SOLICITAR_PRESTAMO,
+    LISTAR_SOLICITUDES_PENDIENTES,
+    APROBAR_SOLICITUD,
+    RECHAZAR_SOLICITUD,
+    VALIDAR_AUTOMATICO
+}

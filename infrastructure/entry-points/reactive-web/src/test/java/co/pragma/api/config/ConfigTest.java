@@ -1,6 +1,6 @@
 package co.pragma.api.config;
 
-import co.pragma.api.Handler;
+import co.pragma.api.handler.SolicitudPrestamoHandler;
 import co.pragma.api.RouterRest;
 import co.pragma.api.dto.SolicitudPrestamoDtoMapper;
 import co.pragma.model.estadosolicitud.gateways.EstadoSolicitudRepository;
@@ -14,7 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-@ContextConfiguration(classes = {RouterRest.class, Handler.class})
+@ContextConfiguration(classes = {RouterRest.class, SolicitudPrestamoHandler.class})
 @WebFluxTest
 @Import({CorsConfig.class, SecurityHeadersConfig.class})
 class ConfigTest {
