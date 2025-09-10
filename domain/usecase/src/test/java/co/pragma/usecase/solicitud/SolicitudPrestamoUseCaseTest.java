@@ -1,14 +1,12 @@
 package co.pragma.usecase.solicitud;
 
-import co.pragma.exception.ClienteNotFoundException;
+import co.pragma.exception.business.ClienteNotFoundException;
 import co.pragma.model.cliente.Cliente;
 import co.pragma.model.cliente.DocumentoIdentidadVO;
 import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
 import co.pragma.model.tipoprestamo.TipoPrestamo;
-import co.pragma.model.tipoprestamo.TipoPrestamoVO;
-import co.pragma.usecase.solicitud.businessrules.ClienteValidator;
 import co.pragma.usecase.solicitud.businessrules.TipoPrestamoValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

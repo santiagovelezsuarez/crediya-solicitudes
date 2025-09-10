@@ -1,7 +1,6 @@
 package co.pragma.usecase.solicitud.validators;
 
-import co.pragma.exception.TipoPrestamoNotFoundException;
-import co.pragma.model.tipoprestamo.TipoPrestamoVO;
+import co.pragma.exception.business.TipoPrestamoNotFoundException;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
 import co.pragma.usecase.solicitud.businessrules.TipoPrestamoValidator;
 import org.junit.jupiter.api.Test;

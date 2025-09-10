@@ -20,8 +20,8 @@ public class ErrorResponse {
     private String message;
     private String path;
 
-    @JsonProperty("validation_errors")
-    private List<FieldError> validationErrors;
+    @JsonProperty("field_errors")
+    private List<FieldError> fieldErrors = List.of();
 
     @Data
     @AllArgsConstructor

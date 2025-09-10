@@ -1,41 +1,41 @@
 package co.pragma.usecase.solicitud;
 
-import co.pragma.model.cliente.DocumentoIdentidadVO;
-import co.pragma.model.estadosolicitud.EstadoSolicitud;
+import co.pragma.exception.business.RolNotFoundException;
+import co.pragma.exception.business.TipoPrestamoNotFoundException;
+import co.pragma.model.cliente.Cliente;
 import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
+import co.pragma.model.solicitudprestamo.SolicitarPrestamoCommand;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
-import co.pragma.model.tipoprestamo.TipoPrestamoVO;
-import co.pragma.usecase.solicitud.businessrules.ClienteValidator;
+import co.pragma.model.tipoprestamo.TipoPrestamo;
+import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
 import co.pragma.usecase.solicitud.businessrules.TipoPrestamoValidator;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class SolicitudPrestamoUseCase {
 
     private final SolicitudPrestamoRepository solicitudPrestamoRepository;
+    private final TipoPrestamoRepository tipoPrestamoRepository;
     private final TipoPrestamoValidator tipoPrestamoValidator;
-    private final ClienteValidator clienteValidator;
 
-    public Mono<SolicitudPrestamo> createSolicitud(
-            SolicitudPrestamo solicitud,
-            DocumentoIdentidadVO documento,
-            TipoPrestamoVO tipoPrestamoVO) {
+    public Mono<SolicitudPrestamo> execute(SolicitarPrestamoCommand cmd) {
+        return tipoPrestamoRepository.findByNombre(cmd.tipoPrestamo())
+                .switchIfEmpty(Mono.error(new TipoPrestamoNotFoundException()))
+                .flatMap(tipo -> tipoPrestamoValidator.validate(cmd)
+                        .thenReturn(toInitialEntity(cmd, tipo)))
+                .flatMap(solicitudPrestamoRepository::save);
+    }
 
-        return Mono.zip(
-                clienteValidator.validate(documento),
-                tipoPrestamoValidator.validate(tipoPrestamoVO)
-        ).map(tuple -> {
-            var cliente = tuple.getT1();
-            var tipoPrestamo = tuple.getT2();
-            var estadoInicial = EstadoSolicitudCodigo.PENDIENTE_REVISION;
-
-            return solicitud.toBuilder()
-                    .idCliente(cliente.getId())
-                    .idTipoPrestamo(tipoPrestamo.getId())
-                    .estado(estadoInicial)
-                    .build();
-        }).flatMap(solicitudPrestamoRepository::save);
+    private SolicitudPrestamo toInitialEntity(SolicitarPrestamoCommand cmd, TipoPrestamo tipoPrestamo) {
+        return SolicitudPrestamo.builder()
+                .cliente(Cliente.builder().id(UUID.fromString(cmd.idCliente())).build())
+                .tipoPrestamo(tipoPrestamo)
+                .monto(cmd.monto())
+                .plazoEnMeses(cmd.plazoEnMeses())
+                .estado(EstadoSolicitudCodigo.PENDIENTE_REVISION)
+                .build();
     }
 }

@@ -1,6 +1,6 @@
 package co.pragma.api;
 
-import co.pragma.exception.ErrorCode;
+import co.pragma.error.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 

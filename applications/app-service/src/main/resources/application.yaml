@@ -28,6 +28,12 @@ management:
   health:
     circuitbreakers:
       enabled: true
+
+security:
+  jwt:
+    secret-key: ${JWT_SECRET_KEY:8d0ec032515e2e10331c05c99086f2a117ab8c23cd19ec71209cf77354c38870}
+    expiration-time: ${JWT_EXPIRATION:86400}
+
 cors:
   allowed-origins: "http://localhost:4200,http://localhost:8080"
 adapters:

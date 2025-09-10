@@ -3,11 +3,13 @@ package co.pragma.api;
 import co.pragma.api.dto.ErrorResponse;
 import co.pragma.api.dto.SolicitarPrestamoDTO;
 import co.pragma.api.dto.SolicitudPrestamoResponse;
+import co.pragma.api.handler.SolicitudPrestamoHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springdoc.core.annotations.RouterOperation;
 import org.springdoc.core.annotations.RouterOperations;
 import org.springframework.context.annotation.Bean;
@@ -30,13 +32,13 @@ public class RouterRest {
                     path = "/api/v1/solicitud-prestamo",
                     produces = {MediaType.APPLICATION_JSON_VALUE},
                     method = RequestMethod.POST,
-                    beanClass = Handler.class,
+                    beanClass = SolicitudPrestamoHandler.class,
                     beanMethod = "listenCreateSolicitud",
                     operation = @Operation(
                             operationId = "crearSolicitudPrestamo",
-                            summary = "Crear una nueva solicitud de préstamo",
-                            description = "Crea una solicitud de préstamo validando el cliente y el tipo de préstamo",
+                            summary = "Crear una nueva solicitud de préstamo para un cliente autenticado",
                             tags = {"Solicitud de Préstamo"},
+                            security = { @SecurityRequirement(name = "bearerAuth") },
                             requestBody = @RequestBody(
                                     required = true,
                                     content = @Content(schema = @Schema(implementation = SolicitarPrestamoDTO.class))
@@ -46,7 +48,7 @@ public class RouterRest {
                                             content = @Content(schema = @Schema(implementation = SolicitudPrestamoResponse.class))),
                                     @ApiResponse(responseCode = "400", description = "Request inválido",
                                             content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                                    @ApiResponse(responseCode = "404", description = "Cliente o tipo de préstamo no encontrado",
+                                    @ApiResponse(responseCode = "404", description = "Tipo de préstamo no encontrado",
                                             content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
                                     @ApiResponse(responseCode = "500", description = "Error interno del servidor",
                                             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
@@ -54,8 +56,8 @@ public class RouterRest {
                     )
             )
     })
-    public RouterFunction<ServerResponse> solicitudPrestamoRoutes(Handler handler) {
-        return route(POST("/api/v1/solicitud-prestamo"), handler::listenCreateSolicitud);
+    public RouterFunction<ServerResponse> solicitudPrestamoRoutes(SolicitudPrestamoHandler solicitudPrestamoHandler) {
+        return route(POST("/api/v1/solicitud-prestamo"), solicitudPrestamoHandler::listenCreateSolicitud);
     }
 
     @Bean

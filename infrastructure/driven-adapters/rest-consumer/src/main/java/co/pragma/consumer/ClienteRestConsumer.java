@@ -1,6 +1,6 @@
 package co.pragma.consumer;
 
-import co.pragma.exception.ClienteNotFoundException;
+import co.pragma.exception.business.ClienteNotFoundException;
 import co.pragma.model.cliente.Cliente;
 import co.pragma.model.cliente.DocumentoIdentidadVO;
 import co.pragma.model.cliente.gateways.UsuariosPort;
@@ -28,8 +28,7 @@ public class ClienteRestConsumer implements UsuariosPort {
                         .build(documentoIdentidad.tipoDocumento(), documentoIdentidad.numeroDocumento()))
                 .retrieve()
                 .onStatus(HttpStatus.NOT_FOUND::equals, response ->
-                        Mono.error(new ClienteNotFoundException(
-                                "Cliente no encontrado: " + documentoIdentidad.tipoDocumento() + " " + documentoIdentidad.numeroDocumento()))
+                        Mono.error(new ClienteNotFoundException())
                 )
                 .onStatus(HttpStatus.INTERNAL_SERVER_ERROR::equals, response ->
                         Mono.error(new RuntimeException("Error en servicio de usuarios"))
