@@ -40,7 +40,9 @@ public class JwtAuthenticationFilter implements WebFilter {
                     .toList());
             var auth = new UsernamePasswordAuthenticationToken(userId, "n/a", authorities);
 
-            return chain.filter(exchange).contextWrite(ReactiveSecurityContextHolder.withAuthentication(auth));
+            return chain.filter(exchange)
+                    .contextWrite(ReactiveSecurityContextHolder.withAuthentication(auth))
+                    .contextWrite(context -> context.put("JWT_TOKEN", token));
         } catch (Exception e) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();

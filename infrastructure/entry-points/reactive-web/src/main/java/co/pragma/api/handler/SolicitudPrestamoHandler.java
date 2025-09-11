@@ -6,6 +6,7 @@ import co.pragma.api.dto.SolicitudPrestamoDtoMapper;
 import co.pragma.model.cliente.Permission;
 import co.pragma.model.cliente.PermissionValidator;
 import co.pragma.model.cliente.gateways.SessionProvider;
+import co.pragma.usecase.solicitud.ListarSolicitudesRevisionManualUseCase;
 import co.pragma.usecase.solicitud.SolicitudPrestamoUseCase;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,8 @@ import reactor.core.publisher.Mono;
 public class SolicitudPrestamoHandler {
 
     private final SolicitudPrestamoUseCase solicitudPrestamoUseCase;
+    private final ListarSolicitudesRevisionManualUseCase listarSolicitudesRevisionManualUseCase;
+
     private final ResponseService responseService;
     private final SolicitudPrestamoDtoMapper solicitudDtoMapper;
     private final PermissionValidator permissionValidator;
@@ -39,5 +42,17 @@ public class SolicitudPrestamoHandler {
                 .doOnNext(s -> log.trace("Solicitud de préstamo registrada con éxito: {}", s.getId()))
                 .map(solicitudDtoMapper::toResponse)
                 .flatMap(responseService::createdJson);
+    }
+
+    public Mono<ServerResponse> listenListSolicitudesPendientes(ServerRequest serverRequest) {
+        log.debug("Petición recibida para listar solicitudes pendientes");
+
+        int page = serverRequest.queryParam("page").map(Integer::parseInt).orElse(0);
+        int size = serverRequest.queryParam("size").map(Integer::parseInt).orElse(10);
+
+        return permissionValidator.requirePermission(Permission.LISTAR_SOLICITUDES_PENDIENTES)
+                .then(listarSolicitudesRevisionManualUseCase.execute(page, size))
+                .doOnNext(s -> log.trace("Solicitud listada: {}", s))
+                .flatMap(responseService::okJson);
     }
 }

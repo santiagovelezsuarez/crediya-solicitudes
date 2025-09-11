@@ -11,7 +11,8 @@ public class ErrorCodeHttpMapper {
 
     private static final Map<ErrorCode, HttpStatus> MAPPINGS = Map.of(
             ErrorCode.CLIENTE_NOT_FOUND, HttpStatus.NOT_FOUND,
-            ErrorCode.TIPO_PRESTAMO_NOT_FOUND, HttpStatus.NOT_FOUND
+            ErrorCode.TIPO_PRESTAMO_NOT_FOUND, HttpStatus.NOT_FOUND,
+            ErrorCode.FORBIDDEN, HttpStatus.FORBIDDEN
     );
 
     public HttpStatus toHttpStatus(ErrorCode code) {

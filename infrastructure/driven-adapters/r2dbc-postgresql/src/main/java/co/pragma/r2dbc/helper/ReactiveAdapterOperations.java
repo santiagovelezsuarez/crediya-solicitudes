@@ -6,7 +6,6 @@ import org.springframework.data.repository.query.ReactiveQueryByExampleExecutor;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
 import java.lang.reflect.ParameterizedType;
 import java.util.function.Function;
 

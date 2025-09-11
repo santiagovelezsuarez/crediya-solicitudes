@@ -1,6 +1,6 @@
 package co.pragma.config;
 
-import co.pragma.model.cliente.gateways.UsuariosPort;
+import co.pragma.model.cliente.gateways.UsuarioPort;
 import co.pragma.model.estadosolicitud.gateways.EstadoSolicitudRepository;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
@@ -42,8 +42,8 @@ class UseCasesConfigTest {
         }
 
         @Bean
-        public UsuariosPort usuariosPort() {
-            return Mockito.mock(UsuariosPort.class);
+        public UsuarioPort usuariosPort() {
+            return Mockito.mock(UsuarioPort.class);
         }
 
         @Bean

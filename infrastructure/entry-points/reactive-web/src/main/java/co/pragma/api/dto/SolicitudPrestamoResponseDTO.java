@@ -1,8 +1,11 @@
 package co.pragma.api.dto;
 
+import lombok.Builder;
+
 import java.math.BigDecimal;
 
-public record SolicitudPrestamoResponse(
+@Builder
+public record SolicitudPrestamoResponseDTO(
     String id,
     BigDecimal monto,
     int plazoEnMeses,

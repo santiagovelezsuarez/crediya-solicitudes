@@ -14,7 +14,7 @@ import org.springframework.data.relational.core.mapping.Table;
 public class EstadoSolicitudEntity {
     @Id
     @Column("id_estado" )
-    private short id;
+    private Integer id;
     private String nombre;
     private String descripcion;
 }
