@@ -17,15 +17,13 @@ import java.util.function.Function;
 public class JwtService {
 
     private final SecretKey key;
-    private final long expiration;
 
     private static final String ROLE_CLAIM = "role";
     private static final String USERID_CLAIM = "userId";
     private static final String PERMISSIONS_CLAIM = "permissions";
 
-    public JwtService(@Value("8d0ec032515e2e10331c05c99086f2a117ab8c23cd19ec71209cf77354c38870") String secret, @Value("${security.jwt.expiration-time}") long expiration) {
+    public JwtService(@Value("${security.jwt.secret-key}") String secret) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
-        this.expiration = expiration;
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {

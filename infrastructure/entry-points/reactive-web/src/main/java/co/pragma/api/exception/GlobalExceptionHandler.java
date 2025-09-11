@@ -45,7 +45,7 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
         return RouterFunctions.route(RequestPredicates.all(), this::buildErrorResponse);
     }
 
-    private Mono<ServerResponse> buildErrorResponse(ServerRequest request) {
+    protected Mono<ServerResponse> buildErrorResponse(ServerRequest request) {
         return Mono.error(getError(request))
                 .onErrorResume(BusinessException.class, ex -> handleBusinessException(ex, request))
                 .onErrorResume(InfrastructureException.class, ex -> handleInfrastructureException(request))
@@ -54,19 +54,17 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
                 .onErrorResume(ex -> handleDefaultException(request)).cast(ServerResponse.class);
     }
 
-    private Mono<ServerResponse>  handleBusinessException(BusinessException ex, ServerRequest request) {
+    private Mono<ServerResponse> handleBusinessException(BusinessException ex, ServerRequest request) {
         HttpStatus status = errorCodeHttpMapper.toHttpStatus(ex.getCode());
-
         return buildResponse(ErrorContext.of(request, status, ex.getCode(), ex.getMessage()));
     }
 
-    private Mono<ServerResponse>  handleInfrastructureException(ServerRequest request) {
+    private Mono<ServerResponse> handleInfrastructureException(ServerRequest request) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-
         return buildResponse(ErrorContext.of(request, status, ErrorCode.TECHNICAL_ERROR));
     }
 
-    private Mono<ServerResponse>  handleValidationException(DtoValidationException ex, ServerRequest request) {
+    private Mono<ServerResponse> handleValidationException(DtoValidationException ex, ServerRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         List<ErrorResponse.FieldError> fieldErrors = ex.getErrors().stream()
                 .map(err -> new ErrorResponse.FieldError(err.field(), err.message()))
@@ -76,7 +74,7 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
 
     }
 
-    private Mono<ServerResponse>  handleWebInputException(ServerRequest request) {
+    private Mono<ServerResponse> handleWebInputException(ServerRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         return buildResponse(ErrorContext.of(request, status, ErrorCode.INVALID_REQUEST));
     }

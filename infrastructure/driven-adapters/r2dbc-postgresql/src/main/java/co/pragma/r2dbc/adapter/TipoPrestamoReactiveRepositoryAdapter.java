@@ -1,6 +1,9 @@
 package co.pragma.r2dbc.adapter;
 
+import co.pragma.error.ErrorCode;
+import co.pragma.exception.InfrastructureException;
 import co.pragma.model.tipoprestamo.TipoPrestamo;
+import co.pragma.model.tipoprestamo.TipoPrestamoInfo;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
 import co.pragma.r2dbc.entity.TipoPrestamoEntity;
 import co.pragma.r2dbc.helper.ReactiveAdapterOperations;
@@ -8,8 +11,9 @@ import co.pragma.r2dbc.repository.TipoPrestamoReactiveRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -27,27 +31,25 @@ public class TipoPrestamoReactiveRepositoryAdapter extends ReactiveAdapterOperat
 
     @Override
     public Mono<TipoPrestamo> findById(String id) {
-        log.info("TipoPrestamoReactiveRepositoryAdapter.findById {}", id);
+        log.debug("TipoPrestamoReactiveRepositoryAdapter.findById {}", id);
         return repository.findById(UUID.fromString(id))
                 .map(entity -> mapper.map(entity, TipoPrestamo.class))
-                .doOnNext(entity -> log.info("Tipo de préstamo encontrado: {}", entity))
-                .switchIfEmpty(Mono.defer(() -> {
-                    log.info("No se encontró tipo de préstamo con ID={}", id);
-                    return Mono.empty();
-                }))
-                .doOnError(e -> log.error("Error al buscar tipo de préstamo con ID {} : {}", id, e.getMessage()));
+                .onErrorMap(ex -> new InfrastructureException(ErrorCode.DB_ERROR.name(), ex));
     }
 
     @Override
     public Mono<TipoPrestamo> findByNombre(String nombre) {
-        log.info("Buscando tipo de préstamo por NOMBRE: {}", nombre);
+        log.debug("Buscando tipo de préstamo por NOMBRE: {}", nombre);
         return repository.findByNombre(nombre)
-                .map(prestamo -> mapper.map(prestamo, TipoPrestamo.class))
-                .doOnNext(prestamo -> log.info("Tipo de préstamo encontrado: {}", prestamo.getId()))
-                .switchIfEmpty(Mono.defer(() -> {
-                    log.info("No se encontró tipo de préstamo con nombre={}", nombre);
-                    return Mono.empty();
-                }))
-                .doOnError(e -> log.error("Error al buscar tipo de préstamo con nombre {} : {}", nombre, e.getMessage()));
+                .map(entity -> mapper.map(entity, TipoPrestamo.class))
+                .onErrorMap(ex -> new InfrastructureException(ErrorCode.DB_ERROR.name(), ex));
+    }
+
+    @Override
+    public Flux<TipoPrestamoInfo> findByIdIn(List<UUID> ids) {
+        log.debug("Buscando tipo de préstamo por Ids");
+        return repository.findByIdIn(ids)
+                .map(entity -> mapper.map(entity, TipoPrestamoInfo.class))
+                .onErrorMap(ex -> new InfrastructureException(ErrorCode.DB_ERROR.name(), ex));
     }
 }

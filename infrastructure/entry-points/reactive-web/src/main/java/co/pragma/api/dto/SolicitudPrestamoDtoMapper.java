@@ -9,14 +9,12 @@ import org.mapstruct.Mapping;
 public interface SolicitudPrestamoDtoMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "cliente", ignore = true)
-    @Mapping(target = "tipoPrestamo", ignore = true)
     @Mapping(target = "estado", ignore = true)
     SolicitudPrestamo toDomain(SolicitarPrestamoDTO dto);
 
     @Mapping(target = "estado", expression = "java(solicitud.getEstado().name())")
     @Mapping(target = "tipoPrestamo", ignore = true)
-    SolicitudPrestamoResponse toResponse(SolicitudPrestamo solicitud);
+    SolicitudPrestamoResponseDTO toResponse(SolicitudPrestamo solicitud);
 
     default SolicitarPrestamoCommand toCommand(SolicitarPrestamoDTO dto, String userId) {
         return SolicitarPrestamoCommand.builder()

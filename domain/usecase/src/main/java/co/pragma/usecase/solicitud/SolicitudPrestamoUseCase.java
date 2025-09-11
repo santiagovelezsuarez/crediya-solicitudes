@@ -31,8 +31,8 @@ public class SolicitudPrestamoUseCase {
 
     private SolicitudPrestamo toInitialEntity(SolicitarPrestamoCommand cmd, TipoPrestamo tipoPrestamo) {
         return SolicitudPrestamo.builder()
-                .cliente(Cliente.builder().id(UUID.fromString(cmd.idCliente())).build())
-                .tipoPrestamo(tipoPrestamo)
+                .idCliente(UUID.fromString(cmd.idCliente()))
+                .idTipoPrestamo(tipoPrestamo.getId())
                 .monto(cmd.monto())
                 .plazoEnMeses(cmd.plazoEnMeses())
                 .estado(EstadoSolicitudCodigo.PENDIENTE_REVISION)

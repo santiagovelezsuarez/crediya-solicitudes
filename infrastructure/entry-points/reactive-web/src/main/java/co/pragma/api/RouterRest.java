@@ -2,9 +2,13 @@ package co.pragma.api;
 
 import co.pragma.api.dto.ErrorResponse;
 import co.pragma.api.dto.SolicitarPrestamoDTO;
-import co.pragma.api.dto.SolicitudPrestamoResponse;
+import co.pragma.api.dto.SolicitudPrestamoResponseDTO;
 import co.pragma.api.handler.SolicitudPrestamoHandler;
+import co.pragma.model.solicitudprestamo.projection.SolicitudPrestamoRevision;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -45,7 +49,7 @@ public class RouterRest {
                             ),
                             responses = {
                                     @ApiResponse(responseCode = "201", description = "Solicitud creada exitosamente",
-                                            content = @Content(schema = @Schema(implementation = SolicitudPrestamoResponse.class))),
+                                            content = @Content(schema = @Schema(implementation = SolicitudPrestamoResponseDTO.class))),
                                     @ApiResponse(responseCode = "400", description = "Request inválido",
                                             content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
                                     @ApiResponse(responseCode = "404", description = "Tipo de préstamo no encontrado",
@@ -54,10 +58,37 @@ public class RouterRest {
                                             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
                             }
                     )
+            ),
+            @RouterOperation(
+                    path = "/api/v1/solicitud-prestamo",
+                    produces = {MediaType.APPLICATION_JSON_VALUE},
+                    method = RequestMethod.GET,
+                    beanClass = SolicitudPrestamoHandler.class,
+                    beanMethod = "listenListSolicitudesPendientes",
+                    operation = @Operation(
+                            operationId = "listarSolicitudesPendientesRevision",
+                            summary = "Listar solicitudes de préstamo pendientes de revisión manual",
+                            description = "Retorna una lista paginada de solicitudes en estado Pendiente de revisión, Rechazadas o en Revisión manual. Solo accesible para usuarios con rol Asesor.",
+                            tags = {"Solicitud de Préstamo"},
+                            security = { @SecurityRequirement(name = "bearerAuth") },
+                            parameters = {
+                                    @Parameter(name = "page", description = "Número de página (por defecto 0)", in = ParameterIn.QUERY, schema = @Schema(type = "integer")),
+                                    @Parameter(name = "size", description = "Tamaño de página (por defecto 10)", in = ParameterIn.QUERY, schema = @Schema(type = "integer"))
+                            },
+                            responses = {
+                                    @ApiResponse(responseCode = "200", description = "Listado de solicitudes pendientes",
+                                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = SolicitudPrestamoRevision.class)))),
+                                    @ApiResponse(responseCode = "403", description = "No autorizado para acceder a este recurso",
+                                            content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                                    @ApiResponse(responseCode = "500", description = "Error interno del servidor",
+                                            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                            }
+                    )
             )
     })
     public RouterFunction<ServerResponse> solicitudPrestamoRoutes(SolicitudPrestamoHandler solicitudPrestamoHandler) {
-        return route(POST("/api/v1/solicitud-prestamo"), solicitudPrestamoHandler::listenCreateSolicitud);
+        return route(POST("/api/v1/solicitud-prestamo"), solicitudPrestamoHandler::listenCreateSolicitud)
+                .andRoute(GET("/api/v1/solicitud-prestamo"), solicitudPrestamoHandler::listenListSolicitudesPendientes);
     }
 
     @Bean

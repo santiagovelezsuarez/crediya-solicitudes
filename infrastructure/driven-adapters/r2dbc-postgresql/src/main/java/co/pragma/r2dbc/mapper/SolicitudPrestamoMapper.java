@@ -15,9 +15,7 @@ public interface SolicitudPrestamoMapper {
     @Mapping(target = "estado", source = "idEstado")
     SolicitudPrestamo toDomain(SolicitudPrestamoEntity entity);
 
-    @Mapping(target = "idTipoPrestamo", source = "tipoPrestamo.id")
     @Mapping(target = "idEstado", source = "estado")
-    @Mapping(target = "idCliente", source = "cliente")
     SolicitudPrestamoEntity toEntity(SolicitudPrestamo model);
 
     default EstadoSolicitudCodigo map(short idEstado) {
