@@ -1,0 +1,13 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+
+adapters:
+  r2dbc:
+    host: <tu-host>
+    port: 5432
+    database: <tu-db>
+    schema: public
+    username: <tu-usuario>
+    password: <tu-password>
