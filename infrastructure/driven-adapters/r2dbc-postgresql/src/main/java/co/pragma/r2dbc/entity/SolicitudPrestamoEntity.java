@@ -18,10 +18,7 @@ public class SolicitudPrestamoEntity {
     @Column("id_solicitud")
     private UUID id;
     private UUID idCliente;
-
-    @Column("id_estado")
-    private Short idEstado;
-
+    private Integer idEstado;
     private BigDecimal monto;
     private Integer plazoEnMeses;
     private UUID idTipoPrestamo;

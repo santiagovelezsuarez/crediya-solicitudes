@@ -3,7 +3,7 @@ package co.pragma.api.config;
 import co.pragma.api.adapters.ResponseService;
 import co.pragma.api.handler.SolicitudPrestamoHandler;
 import co.pragma.api.RouterRest;
-import co.pragma.api.dto.SolicitudPrestamoDtoMapper;
+import co.pragma.api.mapper.SolicitudPrestamoDtoMapper;
 import co.pragma.api.security.JwtService;
 import co.pragma.model.cliente.PermissionValidator;
 import co.pragma.model.cliente.gateways.SessionProvider;

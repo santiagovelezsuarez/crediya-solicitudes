@@ -1,0 +1,47 @@
+package co.pragma.api.mapper;
+
+import co.pragma.api.dto.*;
+import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
+import co.pragma.model.solicitudprestamo.*;
+
+import java.util.UUID;
+
+public class SolicitudPrestamoDtoMapper {
+
+    private SolicitudPrestamoDtoMapper() {}
+
+    public static SolicitudPrestamo toDomain(SolicitarPrestamoDTO dto, String userId) {
+        return SolicitudPrestamo.builder()
+                .idCliente(UUID.fromString(userId))
+                .monto(dto.getMonto())
+                .plazoEnMeses(dto.getPlazoEnMeses())
+                .estado(EstadoSolicitudCodigo.PENDIENTE_REVISION) // siempre inicia pendiente
+                .build();
+    }
+
+    public static SolicitudPrestamoResponseDTO toResponse(SolicitudPrestamo solicitud) {
+        return SolicitudPrestamoResponseDTO.builder()
+                .id(solicitud.getId() != null ? solicitud.getId().toString() : null)
+                .monto(solicitud.getMonto())
+                .plazoEnMeses(solicitud.getPlazoEnMeses())
+                .tipoPrestamo(solicitud.getIdTipoPrestamo() != null ? solicitud.getIdTipoPrestamo().toString() : null)
+                .estado(solicitud.getEstado() != null ? solicitud.getEstado().name() : null)
+                .build();
+    }
+
+    public static SolicitarPrestamoCommand toCommand(SolicitarPrestamoDTO dto, String userId) {
+        return SolicitarPrestamoCommand.builder()
+                .monto(dto.getMonto())
+                .tipoPrestamo(dto.getTipoPrestamo())
+                .plazoEnMeses(dto.getPlazoEnMeses())
+                .idCliente(userId)
+                .build();
+    }
+
+    public static AprobarSolicitudCommand toAprobarCommand(AprobarSolicitudDTO dto) {
+        return AprobarSolicitudCommand.builder()
+                .id(dto.getIdSolicitud())
+                .estado(EstadoSolicitudCodigo.valueOf(dto.getDecisionFinal().toUpperCase()))
+                .build();
+    }
+}

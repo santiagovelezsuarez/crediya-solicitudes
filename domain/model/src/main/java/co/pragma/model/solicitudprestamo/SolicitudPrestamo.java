@@ -34,9 +34,8 @@ public class SolicitudPrestamo {
 
         BigDecimal tasaMensual = tasaInteresAnual.divide(BigDecimal.valueOf(100), mc).divide(BigDecimal.valueOf(12), mc);
 
-        if (tasaMensual.compareTo(BigDecimal.ZERO) == 0) {
+        if (tasaMensual.compareTo(BigDecimal.ZERO) == 0)
             return monto.divide(BigDecimal.valueOf(plazoEnMeses), 2, RoundingMode.HALF_UP);
-        }
 
         BigDecimal unoMasTasa = BigDecimal.ONE.add(tasaMensual, mc);
         BigDecimal potencia = unoMasTasa.pow(-plazoEnMeses, mc);
@@ -46,4 +45,15 @@ public class SolicitudPrestamo {
 
         return numerador.divide(denominador, 2, RoundingMode.HALF_UP);
     }
+
+    public boolean esProcesable() {
+        return estado == EstadoSolicitudCodigo.PENDIENTE_REVISION ||
+               estado == EstadoSolicitudCodigo.REVISION_MANUAL;
+    }
+
+    public boolean estaFinalizada() {
+        return estado == EstadoSolicitudCodigo.APROBADA ||
+                estado == EstadoSolicitudCodigo.RECHAZADA;
+    }
+
 }

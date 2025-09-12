@@ -4,6 +4,7 @@ import co.pragma.exception.business.RolNotFoundException;
 import co.pragma.exception.business.TipoPrestamoNotFoundException;
 import co.pragma.model.cliente.Cliente;
 import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
+import co.pragma.model.solicitudprestamo.AprobarSolicitudCommand;
 import co.pragma.model.solicitudprestamo.SolicitarPrestamoCommand;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;

@@ -5,7 +5,7 @@ import co.pragma.exception.InfrastructureException;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.r2dbc.adapter.SolicitudPrestamoReactiveRepositoryAdapter;
 import co.pragma.r2dbc.entity.SolicitudPrestamoEntity;
-import co.pragma.r2dbc.mapper.SolicitudPrestamoMapper;
+import co.pragma.r2dbc.mapper.SolicitudPrestamoEntityMapper;
 import co.pragma.r2dbc.repository.SolicitudPrestamoReactiveRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ class SolicitudPrestamoRepositoryAdapterTest {
     private SolicitudPrestamoReactiveRepository repository;
 
     @Mock
-    private SolicitudPrestamoMapper mapper;
+    private SolicitudPrestamoEntityMapper mapper;
 
     private SolicitudPrestamo solicitudPrestamo;
     private SolicitudPrestamoEntity entity;
@@ -67,7 +67,7 @@ class SolicitudPrestamoRepositoryAdapterTest {
     void shouldFindByIdEstadoInSuccessfully() {
         mockFindByIdEstadoIn();
 
-        StepVerifier.create(repositoryAdapter.findByIdEstadoIn(List.of((short) 1, (short) 2), 0, 10))
+        StepVerifier.create(repositoryAdapter.findByIdEstadoIn(List.of(1, 2), 0, 10))
                 .expectNextMatches(found -> found.getId().equals(solicitudPrestamo.getId()))
                 .verifyComplete();
     }
@@ -76,7 +76,7 @@ class SolicitudPrestamoRepositoryAdapterTest {
     void shouldReturnEmptyFluxWhenNoSolicitudesFoundForGivenStates() {
         when(repository.findByIdEstadoIn(anyList(), anyInt(), anyInt())).thenReturn(Flux.empty());
 
-        StepVerifier.create(repositoryAdapter.findByIdEstadoIn(List.of((short) 1), 0, 10))
+        StepVerifier.create(repositoryAdapter.findByIdEstadoIn(List.of(1), 0, 10))
                 .verifyComplete();
     }
 
@@ -85,7 +85,7 @@ class SolicitudPrestamoRepositoryAdapterTest {
         when(repository.findByIdEstadoIn(anyList(), anyInt(), anyInt()))
                 .thenReturn(Flux.error(new RuntimeException("DB error")));
 
-        StepVerifier.create(repositoryAdapter.findByIdEstadoIn(List.of((short) 1), 0, 10))
+        StepVerifier.create(repositoryAdapter.findByIdEstadoIn(List.of(1), 0, 10))
                 .expectErrorMatches(this::isInfrastructureException)
                 .verify();
     }
