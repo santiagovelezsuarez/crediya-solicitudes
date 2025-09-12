@@ -1,18 +1,15 @@
 server:
-  port: ${SERVER_PORT:8081}
+  port: "${SERVER_PORT:8081}"
   servlet:
     encoding:
       enabled: true
       charset: "UTF-8"
       force: true
-
 spring:
   application:
     name: "crediya-solicitudes"
-
 cors:
   allowed-origins: "http://localhost:4200,http://localhost:8080"
-
 management:
   endpoints:
     web:
@@ -22,26 +19,21 @@ management:
     health:
       probes:
         enabled: true
-
 security:
   jwt:
-    secret-key: ${JWT_SECRET_KEY:8d0ec032515e2e10331c05c99086f2a117ab8c23cd19ec71209cf77354c38870}
-    expiration-time: ${JWT_EXPIRATION:3600000}
-
+    secret-key: "${JWT_SECRET_KEY:8d0ec032515e2e10331c05c99086f2a117ab8c23cd19ec71209cf77354c38870}"
+    expiration-time: "${JWT_EXPIRATION:3600000}"
 adapters:
   r2dbc:
-    host: ${DB_HOST:localhost}
-    port: ${DB_PORT:5432}
-    database: ${DB_NAME:crediya_solicitudes}
-    schema: public
-    username: ${DB_USER:user}
-    password: ${DB_PASSWORD:pass}
-
+    host: "${DB_HOST:localhost}"
+    port: "${DB_PORT:5432}"
+    database: "${DB_NAME:crediya_solicitudes}"
+    schema: "public"
+    username: "${DB_USER:user}"
+    password: "${DB_PASSWORD:pass}"
   restconsumer:
     auth-service:
       timeout: 5000
-      #url: "http://localhost:8080/api/v1"
-
 resilience4j:
   circuitbreaker:
     instances:
@@ -63,3 +55,8 @@ resilience4j:
         slidingWindowSize: 10
         minimumNumberOfCalls: 10
         waitDurationInOpenState: "10s"
+adapter:
+  sqs:
+    region: "us-east-1"
+    queueUrl: "http://localhost:4566/000000000000/sample"
+    endpoint: "http://localhost:4566 # For localstack only"
