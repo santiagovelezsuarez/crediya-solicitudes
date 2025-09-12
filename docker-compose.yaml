@@ -1,0 +1,52 @@
+services:
+  # Base de datos PostgreSQL
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: crediya-postgres-solicitudes
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: crediya_solicitudes
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - crediya-network
+
+  # Microservicio de Solicitudes
+  crediya-autenticacion:
+    build:
+      context: .
+      dockerfile: deployment/Dockerfile
+    container_name: crediya-solicitudes
+    environment:
+      DB_HOST: postgres-db
+      DB_PORT: 5432
+      DB_NAME: crediya_db
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      SERVER_PORT: ${SERVER_PORT:-8081}
+    ports:
+      - "${SERVER_PORT:-8081}:8081"
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    networks:
+      - crediya-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  crediya-network:
+    driver: bridge
