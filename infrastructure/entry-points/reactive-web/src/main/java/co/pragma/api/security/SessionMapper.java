@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 public class SessionMapper {
 
+    private static final String ROLE_PREFIX = "ROLE_";
+
     private SessionMapper() {}
 
     public static Mono<Session> fromSecurityContext() {
@@ -30,14 +32,14 @@ public class SessionMapper {
 
         String role = auth.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .filter(a -> a.startsWith("ROLE_"))
-                .map(a -> a.replace("ROLE_", ""))
+                .filter(a -> a.startsWith(ROLE_PREFIX))
+                .map(a -> a.replace(ROLE_PREFIX, ""))
                 .findFirst()
                 .orElse("PUBLIC");
 
         Set<String> permissions = auth.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .filter(a -> !a.startsWith("ROLE_"))
+                .filter(a -> !a.startsWith(ROLE_PREFIX))
                 .collect(Collectors.toSet());
 
         return Session.builder()

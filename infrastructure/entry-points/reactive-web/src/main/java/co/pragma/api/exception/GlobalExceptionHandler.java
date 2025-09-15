@@ -67,7 +67,7 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
     private Mono<ServerResponse> handleValidationException(DtoValidationException ex, ServerRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         List<ErrorResponse.FieldError> fieldErrors = ex.getErrors().stream()
-                .map(err -> new ErrorResponse.FieldError(err.field(), err.message()))
+                .map(err -> new ErrorResponse.FieldError(err.getField(), err.getMessage()))
                 .toList();
 
         return buildResponse(ErrorContext.ofValidation(request, status, ErrorCode.INVALID_INPUT, fieldErrors));

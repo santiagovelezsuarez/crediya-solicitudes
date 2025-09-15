@@ -92,7 +92,7 @@ class TipoPrestamoRepositoryAdapterTest {
         mockFindByIdIn();
 
         StepVerifier.create(repositoryAdapter.findByIdIn(List.of(uuid)))
-                .expectNextMatches(info -> info.getId().equals(uuid))
+                .expectNextMatches(tipoPrestamoInfo -> tipoPrestamoInfo.id().equals(uuid))
                 .verifyComplete();
     }
 

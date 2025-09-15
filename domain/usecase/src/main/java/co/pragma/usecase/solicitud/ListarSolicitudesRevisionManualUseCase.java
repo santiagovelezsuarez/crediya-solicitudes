@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class ListarSolicitudesRevisionManualUseCase {
@@ -42,12 +41,12 @@ public class ListarSolicitudesRevisionManualUseCase {
         List<UUID> userIds = solicitudes.stream()
                 .map(SolicitudPrestamo::getIdCliente)
                 .distinct()
-                .collect(Collectors.toList());
+                .toList();
 
         List<UUID> tipoIds = solicitudes.stream()
                 .map(SolicitudPrestamo::getIdTipoPrestamo)
                 .distinct()
-                .collect(Collectors.toList());
+                .toList();
 
         Mono<Map<UUID, ClienteInfo>> clientesMono = usuarioPort.getClientesByIdIn(userIds)
                 .collectMap(ClienteInfo::id, cliente -> cliente);
@@ -66,7 +65,7 @@ public class ListarSolicitudesRevisionManualUseCase {
                                 TipoPrestamoInfo tipo = tipos.get(solicitud.getIdTipoPrestamo());
                                 return toView(solicitud, cliente, tipo);
                             })
-                            .collect(Collectors.toList());
+                            .toList();
                 });
     }
 

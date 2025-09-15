@@ -7,12 +7,12 @@ import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
 import co.pragma.model.solicitudprestamo.*;
 import co.pragma.model.solicitudprestamo.command.AprobarSolicitudCommand;
 import co.pragma.model.solicitudprestamo.command.SolicitarPrestamoCommand;
+import org.springframework.stereotype.Component;
 
+@Component
 public class SolicitudPrestamoDtoMapper {
 
-    private SolicitudPrestamoDtoMapper() {}
-
-    public static SolicitudPrestamoResponseDTO toResponse(SolicitudPrestamo solicitud) {
+    public SolicitudPrestamoResponseDTO toResponse(SolicitudPrestamo solicitud) {
         return SolicitudPrestamoResponseDTO.builder()
                 .id(String.valueOf(solicitud.getId()))
                 .monto(solicitud.getMonto())
@@ -22,12 +22,12 @@ public class SolicitudPrestamoDtoMapper {
                 .build();
     }
 
-    public static SolicitarPrestamoCommand toCommand(SolicitarPrestamoDTO dto, String userId) {
+    public SolicitarPrestamoCommand toCommand(SolicitarPrestamoDTO dto, String userId) {
         return SolicitarPrestamoCommand.builder()
-                .monto(dto.getMonto())
-                .tipoPrestamo(dto.getTipoPrestamo())
-                .plazoEnMeses(dto.getPlazoEnMeses())
                 .idCliente(userId)
+                .monto(dto.getMonto())
+                .plazoEnMeses(dto.getPlazoEnMeses())
+                .tipoPrestamo(dto.getTipoPrestamo())
                 .build();
     }
 

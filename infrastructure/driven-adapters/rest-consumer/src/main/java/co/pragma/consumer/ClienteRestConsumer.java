@@ -58,7 +58,7 @@ public class ClienteRestConsumer implements UsuarioPort {
         return response.flatMapMany(r -> Flux.fromIterable(r.data()));
     }
 
-    private Flux<ClienteInfo> fallbackGetClientesByIdIn(List<UUID> userIds, Throwable throwable) {
+    private Flux<ClienteInfo> fallbackGetClientesByIdIn(Throwable throwable) {
         log.error("Circuit Breaker activado. Fallo en la llamada a ms-auth: {}", throwable.getMessage());
         return Flux.error(new InfrastructureException(ErrorCode.TECHNICAL_ERROR.name(), throwable));
     }

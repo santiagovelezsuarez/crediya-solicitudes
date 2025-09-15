@@ -42,7 +42,6 @@ public class SolicitarPrestamoUseCase {
         String mes = String.format("%02d", java.time.LocalDate.now().getMonthValue());
         String dia = String.format("%02d", java.time.LocalDate.now().getDayOfMonth());
         String sufijo = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-        String codigo = "SP-" + anio + mes + dia + "-" + sufijo;
-        return codigo;
+        return "SP-" + anio + mes + dia + "-" + sufijo;
     }
 }

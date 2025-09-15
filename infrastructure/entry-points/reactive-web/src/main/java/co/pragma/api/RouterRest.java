@@ -29,6 +29,8 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @Configuration
 public class RouterRest {
 
+    private static final String ROUTE = "/api/v1/solicitud-prestamo";
+
     @Bean
     @RouterOperations({
             @RouterOperation(
@@ -86,9 +88,9 @@ public class RouterRest {
             )
     })
     public RouterFunction<ServerResponse> solicitudPrestamoRoutes(SolicitudPrestamoHandler solicitudPrestamoHandler) {
-        return route(POST("/api/v1/solicitud-prestamo"), solicitudPrestamoHandler::listenRegistrarSolicitud)
-                .andRoute(GET("/api/v1/solicitud-prestamo"), solicitudPrestamoHandler::listenListarSolicitudesPendientes)
-                .andRoute(PUT("/api/v1/solicitud-prestamo"), solicitudPrestamoHandler::listenAprobarSolicitud);
+        return route(POST(ROUTE), solicitudPrestamoHandler::listenRegistrarSolicitud)
+                .andRoute(GET(ROUTE), solicitudPrestamoHandler::listenListarSolicitudesPendientes)
+                .andRoute(PUT(ROUTE), solicitudPrestamoHandler::listenAprobarSolicitud);
     }
 
     @Bean

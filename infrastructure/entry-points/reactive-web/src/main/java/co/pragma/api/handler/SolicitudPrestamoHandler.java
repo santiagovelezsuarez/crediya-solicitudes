@@ -26,6 +26,7 @@ public class SolicitudPrestamoHandler {
     private final SolicitarPrestamoUseCase solicitarPrestamoUseCase;
     private final ListarSolicitudesRevisionManualUseCase listarSolicitudesRevisionManualUseCase;
     private final AprobarSolicitudPrestamoUseCase aprobarSolicitudPrestamoUseCase;
+    private final SolicitudPrestamoDtoMapper mapper;
     private final DtoValidator dtoValidator;
 
     private final ResponseService responseService;
@@ -40,11 +41,11 @@ public class SolicitudPrestamoHandler {
                 .flatMap(dto -> permissionValidator
                         .requirePermission(Permission.SOLICITAR_PRESTAMO)
                         .then(sessionProvider.getCurrentSession())
-                        .map(session -> SolicitudPrestamoDtoMapper.toCommand(dto, session.getUserId()))
+                        .map(session -> mapper.toCommand(dto, session.getUserId()))
                 )
                 .flatMap(solicitarPrestamoUseCase::execute)
                 .doOnNext(s -> log.trace("Solicitud de préstamo registrada con éxito: {}", s.getId()))
-                .map(SolicitudPrestamoDtoMapper::toResponse)
+                .map(mapper::toResponse)
                 .flatMap(responseService::createdJson);
     }
 
@@ -72,7 +73,7 @@ public class SolicitudPrestamoHandler {
                 )
                 .flatMap(aprobarSolicitudPrestamoUseCase::execute)
                 .doOnNext(solicitud -> log.info("Solicitud {} actualizada", solicitud.getCodigo()))
-                .map(SolicitudPrestamoDtoMapper::toResponse)
+                .map(mapper::toResponse)
                 .flatMap(responseService::okJson);
     }
 }
