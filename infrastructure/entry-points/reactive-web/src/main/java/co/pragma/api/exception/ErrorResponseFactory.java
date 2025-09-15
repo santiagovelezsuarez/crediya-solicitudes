@@ -1,6 +1,6 @@
 package co.pragma.api.exception;
 
-import co.pragma.api.dto.ErrorResponse;
+import co.pragma.api.dto.response.ErrorResponse;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;

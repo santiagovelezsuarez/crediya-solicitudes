@@ -1,4 +1,4 @@
-package co.pragma.model.cliente;
+package co.pragma.model.cliente.projection;
 
 import java.util.List;
 

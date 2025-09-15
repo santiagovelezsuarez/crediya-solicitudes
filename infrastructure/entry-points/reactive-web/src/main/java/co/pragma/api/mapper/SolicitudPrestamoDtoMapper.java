@@ -1,27 +1,20 @@
 package co.pragma.api.mapper;
 
-import co.pragma.api.dto.*;
+import co.pragma.api.dto.request.AprobarSolicitudDTO;
+import co.pragma.api.dto.request.SolicitarPrestamoDTO;
+import co.pragma.api.dto.response.SolicitudPrestamoResponseDTO;
 import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
 import co.pragma.model.solicitudprestamo.*;
+import co.pragma.model.solicitudprestamo.command.AprobarSolicitudCommand;
+import co.pragma.model.solicitudprestamo.command.SolicitarPrestamoCommand;
+import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
+@Component
 public class SolicitudPrestamoDtoMapper {
 
-    private SolicitudPrestamoDtoMapper() {}
-
-    public static SolicitudPrestamo toDomain(SolicitarPrestamoDTO dto, String userId) {
-        return SolicitudPrestamo.builder()
-                .idCliente(UUID.fromString(userId))
-                .monto(dto.getMonto())
-                .plazoEnMeses(dto.getPlazoEnMeses())
-                .estado(EstadoSolicitudCodigo.PENDIENTE_REVISION) // siempre inicia pendiente
-                .build();
-    }
-
-    public static SolicitudPrestamoResponseDTO toResponse(SolicitudPrestamo solicitud) {
+    public SolicitudPrestamoResponseDTO toResponse(SolicitudPrestamo solicitud) {
         return SolicitudPrestamoResponseDTO.builder()
-                .id(solicitud.getId() != null ? solicitud.getId().toString() : null)
+                .id(String.valueOf(solicitud.getId()))
                 .monto(solicitud.getMonto())
                 .plazoEnMeses(solicitud.getPlazoEnMeses())
                 .tipoPrestamo(solicitud.getIdTipoPrestamo() != null ? solicitud.getIdTipoPrestamo().toString() : null)
@@ -29,12 +22,12 @@ public class SolicitudPrestamoDtoMapper {
                 .build();
     }
 
-    public static SolicitarPrestamoCommand toCommand(SolicitarPrestamoDTO dto, String userId) {
+    public SolicitarPrestamoCommand toCommand(SolicitarPrestamoDTO dto, String userId) {
         return SolicitarPrestamoCommand.builder()
-                .monto(dto.getMonto())
-                .tipoPrestamo(dto.getTipoPrestamo())
-                .plazoEnMeses(dto.getPlazoEnMeses())
                 .idCliente(userId)
+                .monto(dto.getMonto())
+                .plazoEnMeses(dto.getPlazoEnMeses())
+                .tipoPrestamo(dto.getTipoPrestamo())
                 .build();
     }
 

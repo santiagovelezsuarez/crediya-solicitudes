@@ -1,7 +1,7 @@
-package co.pragma.model.cliente;
+package co.pragma.model.session;
 
 import co.pragma.exception.business.ForbiddenException;
-import co.pragma.model.cliente.gateways.SessionProvider;
+import co.pragma.model.session.gateways.SessionProvider;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 

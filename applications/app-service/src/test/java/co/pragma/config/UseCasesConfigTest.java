@@ -4,7 +4,10 @@ import co.pragma.model.cliente.gateways.UsuarioPort;
 import co.pragma.model.estadosolicitud.gateways.EstadoSolicitudRepository;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
+import co.pragma.usecase.solicitud.AprobarSolicitudPrestamoUseCase;
+import co.pragma.usecase.solicitud.ListarSolicitudesRevisionManualUseCase;
 import co.pragma.usecase.solicitud.SolicitarPrestamoUseCase;
+import co.pragma.usecase.solicitud.businessrules.TipoPrestamoValidator;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -37,11 +40,6 @@ class UseCasesConfigTest {
     static class TestConfig {
 
         @Bean
-        public MyUseCase myUseCase() {
-            return new MyUseCase();
-        }
-
-        @Bean
         public UsuarioPort usuariosPort() {
             return Mockito.mock(UsuarioPort.class);
         }
@@ -66,12 +64,20 @@ class UseCasesConfigTest {
             return Mockito.mock(SolicitarPrestamoUseCase.class);
         }
 
+        @Bean
+        public ListarSolicitudesRevisionManualUseCase listarSolicitudesRevisionManualUseCase() {
+            return Mockito.mock(ListarSolicitudesRevisionManualUseCase.class);
+        }
 
-    }
+        @Bean
+        public AprobarSolicitudPrestamoUseCase aprobarSolicitudPrestamoUseCase() {
+            return Mockito.mock(AprobarSolicitudPrestamoUseCase.class);
+        }
 
-    static class MyUseCase {
-        public String execute() {
-            return "MyUseCase Test";
+        @Bean
+        public TipoPrestamoValidator tipoPrestamoValidator() {
+            return Mockito.mock(TipoPrestamoValidator.class);
         }
     }
+
 }

@@ -1,10 +1,10 @@
 package co.pragma.usecase.solicitud;
 
-import co.pragma.model.cliente.ClienteInfo;
+import co.pragma.model.cliente.projection.ClienteInfo;
 import co.pragma.model.cliente.gateways.UsuarioPort;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
-import co.pragma.model.tipoprestamo.TipoPrestamoInfo;
+import co.pragma.model.tipoprestamo.projection.TipoPrestamoInfo;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,18 +14,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
 import java.util.stream.IntStream;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ListarSolicitudesRevisionManualUseCaseTest {
+class ListarSolicitudesRevisionManualUseCaseTest {
 
     @Mock
     private SolicitudPrestamoRepository solicitudPrestamoRepository;
@@ -54,15 +53,15 @@ public class ListarSolicitudesRevisionManualUseCaseTest {
                         .plazoEnMeses(12)
                         .estado(co.pragma.model.estadosolicitud.EstadoSolicitudCodigo.PENDIENTE_REVISION)
                         .build())
-                .collect(Collectors.toList());
+                .toList();
 
         tipos = solicitudes.stream()
                 .map(s -> TipoPrestamoInfo.builder().id(s.getIdTipoPrestamo()).nombre("Personal").tasaInteres(new BigDecimal("0.10")).build())
-                .collect(Collectors.toList());
+                .toList();
 
         clientes = solicitudes.stream()
                 .map(s -> new ClienteInfo(s.getIdCliente(), "test" + s.getId() + "@mail.com", "Test User", new BigDecimal("5000"), new BigDecimal("100")))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Test

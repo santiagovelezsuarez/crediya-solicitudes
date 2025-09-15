@@ -1,9 +1,9 @@
 package co.pragma.consumer;
 
 
-import co.pragma.model.cliente.ClienteInfo;
-import co.pragma.model.cliente.ClientesInfoList;
-import co.pragma.model.cliente.TokenProvider;
+import co.pragma.model.cliente.projection.ClienteInfo;
+import co.pragma.model.cliente.projection.ClientesInfoList;
+import co.pragma.model.session.gateways.TokenProvider;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;

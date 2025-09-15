@@ -1,4 +1,4 @@
-package co.pragma.model.solicitudprestamo;
+package co.pragma.model.solicitudprestamo.command;
 
 import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
 import lombok.Builder;

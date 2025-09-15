@@ -3,7 +3,7 @@ package co.pragma.usecase.solicitud;
 import co.pragma.exception.business.SolicitudAlreadyProcessedException;
 import co.pragma.exception.business.SolicitudPrestamoNotFound;
 import co.pragma.model.cliente.gateways.UsuarioPort;
-import co.pragma.model.solicitudprestamo.AprobarSolicitudCommand;
+import co.pragma.model.solicitudprestamo.command.AprobarSolicitudCommand;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoEventPublisher;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;

@@ -1,4 +1,4 @@
-package co.pragma.model.cliente;
+package co.pragma.model.session;
 
 import lombok.Builder;
 import lombok.Data;

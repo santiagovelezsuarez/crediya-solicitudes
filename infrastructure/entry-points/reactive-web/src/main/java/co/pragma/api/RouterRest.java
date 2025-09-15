@@ -1,8 +1,8 @@
 package co.pragma.api;
 
-import co.pragma.api.dto.ErrorResponse;
-import co.pragma.api.dto.SolicitarPrestamoDTO;
-import co.pragma.api.dto.SolicitudPrestamoResponseDTO;
+import co.pragma.api.dto.response.ErrorResponse;
+import co.pragma.api.dto.request.SolicitarPrestamoDTO;
+import co.pragma.api.dto.response.SolicitudPrestamoResponseDTO;
 import co.pragma.api.handler.SolicitudPrestamoHandler;
 import co.pragma.model.solicitudprestamo.projection.SolicitudPrestamoRevision;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +28,8 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 
 @Configuration
 public class RouterRest {
+
+    private static final String ROUTE = "/api/v1/solicitud-prestamo";
 
     @Bean
     @RouterOperations({
@@ -86,9 +88,9 @@ public class RouterRest {
             )
     })
     public RouterFunction<ServerResponse> solicitudPrestamoRoutes(SolicitudPrestamoHandler solicitudPrestamoHandler) {
-        return route(POST("/api/v1/solicitud-prestamo"), solicitudPrestamoHandler::listenRegistrarSolicitud)
-                .andRoute(GET("/api/v1/solicitud-prestamo"), solicitudPrestamoHandler::listenListarSolicitudesPendientes)
-                .andRoute(PUT("/api/v1/solicitud-prestamo"), solicitudPrestamoHandler::listenAprobarSolicitud);
+        return route(POST(ROUTE), solicitudPrestamoHandler::listenRegistrarSolicitud)
+                .andRoute(GET(ROUTE), solicitudPrestamoHandler::listenListarSolicitudesPendientes)
+                .andRoute(PUT(ROUTE), solicitudPrestamoHandler::listenAprobarSolicitud);
     }
 
     @Bean

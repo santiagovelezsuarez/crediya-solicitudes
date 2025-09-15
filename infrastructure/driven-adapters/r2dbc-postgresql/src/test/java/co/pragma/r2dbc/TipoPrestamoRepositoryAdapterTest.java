@@ -1,9 +1,9 @@
 package co.pragma.r2dbc;
 
-import co.pragma.error.ErrorCode;
+import co.pragma.exception.ErrorCode;
 import co.pragma.exception.InfrastructureException;
 import co.pragma.model.tipoprestamo.TipoPrestamo;
-import co.pragma.model.tipoprestamo.TipoPrestamoInfo;
+import co.pragma.model.tipoprestamo.projection.TipoPrestamoInfo;
 import co.pragma.r2dbc.adapter.TipoPrestamoReactiveRepositoryAdapter;
 import co.pragma.r2dbc.entity.TipoPrestamoEntity;
 import co.pragma.r2dbc.repository.TipoPrestamoReactiveRepository;
@@ -92,7 +92,7 @@ class TipoPrestamoRepositoryAdapterTest {
         mockFindByIdIn();
 
         StepVerifier.create(repositoryAdapter.findByIdIn(List.of(uuid)))
-                .expectNextMatches(info -> info.getId().equals(uuid))
+                .expectNextMatches(tipoPrestamoInfo -> tipoPrestamoInfo.id().equals(uuid))
                 .verifyComplete();
     }
 

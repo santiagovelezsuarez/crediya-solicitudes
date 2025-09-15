@@ -1,4 +1,4 @@
-package co.pragma.model.solicitudprestamo;
+package co.pragma.model.solicitudprestamo.command;
 
 import lombok.Builder;
 import java.math.BigDecimal;

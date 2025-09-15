@@ -1,6 +1,6 @@
 package co.pragma.exception.business;
 
-import co.pragma.error.ErrorCode;
+import co.pragma.exception.ErrorCode;
 
 public class SolicitudPrestamoNotFound extends BusinessException {
     public  SolicitudPrestamoNotFound() {

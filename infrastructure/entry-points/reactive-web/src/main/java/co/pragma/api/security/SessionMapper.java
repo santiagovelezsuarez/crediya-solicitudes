@@ -1,6 +1,6 @@
 package co.pragma.api.security;
 
-import co.pragma.model.cliente.Session;
+import co.pragma.model.session.Session;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SessionMapper {
+
+    private static final String ROLE_PREFIX = "ROLE_";
 
     private SessionMapper() {}
 
@@ -30,14 +32,14 @@ public class SessionMapper {
 
         String role = auth.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .filter(a -> a.startsWith("ROLE_"))
-                .map(a -> a.replace("ROLE_", ""))
+                .filter(a -> a.startsWith(ROLE_PREFIX))
+                .map(a -> a.replace(ROLE_PREFIX, ""))
                 .findFirst()
                 .orElse("PUBLIC");
 
         Set<String> permissions = auth.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .filter(a -> !a.startsWith("ROLE_"))
+                .filter(a -> !a.startsWith(ROLE_PREFIX))
                 .collect(Collectors.toSet());
 
         return Session.builder()

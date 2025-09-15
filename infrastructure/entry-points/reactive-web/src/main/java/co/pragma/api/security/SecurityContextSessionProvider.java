@@ -1,7 +1,7 @@
 package co.pragma.api.security;
 
-import co.pragma.model.cliente.Session;
-import co.pragma.model.cliente.gateways.SessionProvider;
+import co.pragma.model.session.Session;
+import co.pragma.model.session.gateways.SessionProvider;
 import reactor.core.publisher.Mono;
 
 public class SecurityContextSessionProvider implements SessionProvider {

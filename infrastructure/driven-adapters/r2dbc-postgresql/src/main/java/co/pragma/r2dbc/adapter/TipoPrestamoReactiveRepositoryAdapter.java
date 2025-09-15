@@ -1,9 +1,9 @@
 package co.pragma.r2dbc.adapter;
 
-import co.pragma.error.ErrorCode;
+import co.pragma.exception.ErrorCode;
 import co.pragma.exception.InfrastructureException;
 import co.pragma.model.tipoprestamo.TipoPrestamo;
-import co.pragma.model.tipoprestamo.TipoPrestamoInfo;
+import co.pragma.model.tipoprestamo.projection.TipoPrestamoInfo;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
 import co.pragma.r2dbc.entity.TipoPrestamoEntity;
 import co.pragma.r2dbc.helper.ReactiveAdapterOperations;

@@ -1,14 +1,19 @@
 package co.pragma.api.config;
 
 import co.pragma.api.adapters.ResponseService;
+import co.pragma.api.dto.DtoValidator;
 import co.pragma.api.handler.SolicitudPrestamoHandler;
 import co.pragma.api.RouterRest;
 import co.pragma.api.mapper.SolicitudPrestamoDtoMapper;
 import co.pragma.api.security.JwtService;
-import co.pragma.model.cliente.PermissionValidator;
-import co.pragma.model.cliente.gateways.SessionProvider;
+import co.pragma.model.cliente.gateways.UsuarioPort;
+import co.pragma.model.session.PermissionValidator;
+import co.pragma.model.session.gateways.SessionProvider;
 import co.pragma.model.estadosolicitud.gateways.EstadoSolicitudRepository;
+import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoEventPublisher;
+import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
+import co.pragma.usecase.solicitud.AprobarSolicitudPrestamoUseCase;
 import co.pragma.usecase.solicitud.ListarSolicitudesRevisionManualUseCase;
 import co.pragma.usecase.solicitud.SolicitarPrestamoUseCase;
 import org.junit.jupiter.api.Test;
@@ -50,6 +55,21 @@ class ConfigTest {
 
     @MockitoBean
     private EstadoSolicitudRepository estadoSolicitudRepository;
+
+    @MockitoBean
+    private AprobarSolicitudPrestamoUseCase aprobarSolicitudPrestamoUseCase;
+
+    @MockitoBean
+    private SolicitudPrestamoEventPublisher solicitudPrestamoEventPublisher;
+
+    @MockitoBean
+    private SolicitudPrestamoRepository solicitudPrestamoRepository;
+
+    @MockitoBean
+    private DtoValidator dtoValidator;
+
+    @MockitoBean
+    private UsuarioPort usuarioPort;
 
     @MockitoBean
     private JwtService jwtService;

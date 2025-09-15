@@ -1,6 +1,6 @@
 package co.pragma.r2dbc;
 
-import co.pragma.error.ErrorCode;
+import co.pragma.exception.ErrorCode;
 import co.pragma.exception.InfrastructureException;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.r2dbc.adapter.SolicitudPrestamoReactiveRepositoryAdapter;
@@ -45,8 +45,9 @@ class SolicitudPrestamoRepositoryAdapterTest {
 
     @Test
     void shouldSaveSolicitudPrestamoSuccessfully() {
-        mockSave();
-
+        when(mapper.toEntity(any(SolicitudPrestamo.class))).thenReturn(entity);
+        when(mapper.toDomain(any(SolicitudPrestamoEntity.class))).thenReturn(solicitudPrestamo);
+        when(repository.save(any(SolicitudPrestamoEntity.class))).thenReturn(Mono.just(entity));
         StepVerifier.create(repositoryAdapter.save(solicitudPrestamo))
                 .expectNextMatches(saved -> saved.getId().equals(solicitudPrestamo.getId()))
                 .verifyComplete();
@@ -110,11 +111,6 @@ class SolicitudPrestamoRepositoryAdapterTest {
                 .build();
     }
 
-    private void mockSave() {
-        when(repository.save(any(SolicitudPrestamoEntity.class))).thenReturn(Mono.just(entity));
-        when(mapper.toEntity(any(SolicitudPrestamo.class))).thenReturn(entity);
-        when(mapper.toDomain(any(SolicitudPrestamoEntity.class))).thenReturn(solicitudPrestamo);
-    }
 
     private void mockSaveFailure() {
         when(mapper.toEntity(any(SolicitudPrestamo.class))).thenReturn(entity);

@@ -2,7 +2,8 @@ package co.pragma.api.exception;
 
 import co.pragma.api.ErrorCodeHttpMapper;
 import co.pragma.api.dto.DtoValidationException;
-import co.pragma.error.ErrorCode;
+import co.pragma.api.dto.response.ErrorResponse;
+import co.pragma.exception.ErrorCode;
 import co.pragma.exception.InfrastructureException;
 import co.pragma.exception.business.ForbiddenException;
 import org.assertj.core.api.AssertionsForClassTypes;
@@ -75,7 +76,7 @@ class GlobalExceptionHandlerTest {
                 .handle(request);
 
         StepVerifier.create(responseMono)
-                .assertNext(response -> assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR))
+                .assertNext(serverResponse -> assertThat(serverResponse.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR))
                 .verifyComplete();
     }
 
@@ -91,15 +92,15 @@ class GlobalExceptionHandlerTest {
                 .handle(serverRequest);
 
         StepVerifier.create(responseMono)
-                .assertNext(response ->
-                        AssertionsForClassTypes.assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR))
+                .assertNext(serverResponse ->
+                        AssertionsForClassTypes.assertThat(serverResponse.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR))
                 .verifyComplete();
     }
 
     @Test
     void shouldHandleValidationException() {
-        DtoValidationException.FieldError fieldError = new DtoValidationException.FieldError("plazoEnMeses", "El plazo en meses debe ser positivo");
-        List<DtoValidationException.FieldError> errors = List.of(fieldError);
+        ErrorResponse.FieldError fieldError = new ErrorResponse.FieldError("plazoEnMeses", "El plazo en meses debe ser positivo");
+        List<ErrorResponse.FieldError> errors = List.of(fieldError);
         var ex = new DtoValidationException(errors);
 
         when(errorAttributes.getError(request)).thenReturn(ex);
@@ -110,7 +111,7 @@ class GlobalExceptionHandlerTest {
                 .handle(request);
 
         StepVerifier.create(responseMono)
-                .assertNext(response -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST))
+                .assertNext(serverResponse ->  assertThat(serverResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST))
                 .verifyComplete();
     }
 
@@ -140,8 +141,8 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void shouldLogDtoValidationException(CapturedOutput output) {
-        DtoValidationException.FieldError fieldError = new DtoValidationException.FieldError("plazoEnMeses", "El plazo en meses debe ser positivo");
-        List<DtoValidationException.FieldError> errors = List.of(fieldError);
+        ErrorResponse.FieldError fieldError = new ErrorResponse.FieldError("plazoEnMeses", "El plazo en meses debe ser positivo");
+        List<ErrorResponse.FieldError> errors = List.of(fieldError);
         var ex = new DtoValidationException(errors);
 
         when(request.path()).thenReturn("/error");
