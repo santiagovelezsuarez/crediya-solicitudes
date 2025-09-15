@@ -1,4 +1,4 @@
-package co.pragma.model.cliente;
+package co.pragma.model.session.gateways;
 
 import reactor.core.publisher.Mono;
 

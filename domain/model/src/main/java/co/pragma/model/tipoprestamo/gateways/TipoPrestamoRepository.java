@@ -1,7 +1,7 @@
 package co.pragma.model.tipoprestamo.gateways;
 
 import co.pragma.model.tipoprestamo.TipoPrestamo;
-import co.pragma.model.tipoprestamo.TipoPrestamoInfo;
+import co.pragma.model.tipoprestamo.projection.TipoPrestamoInfo;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import java.util.List;

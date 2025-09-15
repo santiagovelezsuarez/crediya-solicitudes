@@ -2,7 +2,7 @@ package co.pragma.usecase.solicitud.businessrules;
 
 import co.pragma.exception.business.MontoPrestamoOutOfRangeException;
 import co.pragma.exception.business.TipoPrestamoNotFoundException;
-import co.pragma.model.solicitudprestamo.SolicitarPrestamoCommand;
+import co.pragma.model.solicitudprestamo.command.SolicitarPrestamoCommand;
 import co.pragma.model.tipoprestamo.TipoPrestamo;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
 import org.junit.jupiter.api.BeforeEach;

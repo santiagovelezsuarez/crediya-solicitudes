@@ -2,7 +2,7 @@ package co.pragma.api.exception;
 
 import co.pragma.api.ErrorCodeHttpMapper;
 import co.pragma.api.dto.DtoValidationException;
-import co.pragma.error.ErrorCode;
+import co.pragma.exception.ErrorCode;
 import co.pragma.exception.InfrastructureException;
 import co.pragma.exception.business.ForbiddenException;
 import org.assertj.core.api.AssertionsForClassTypes;

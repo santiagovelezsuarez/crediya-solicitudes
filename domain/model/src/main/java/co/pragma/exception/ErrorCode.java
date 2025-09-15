@@ -1,4 +1,4 @@
-package co.pragma.error;
+package co.pragma.exception;
 
 import lombok.Getter;
 

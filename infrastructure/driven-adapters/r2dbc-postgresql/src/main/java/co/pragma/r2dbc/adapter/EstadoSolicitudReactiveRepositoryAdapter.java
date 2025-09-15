@@ -1,6 +1,6 @@
 package co.pragma.r2dbc.adapter;
 
-import co.pragma.error.ErrorCode;
+import co.pragma.exception.ErrorCode;
 import co.pragma.exception.InfrastructureException;
 import co.pragma.model.estadosolicitud.EstadoSolicitud;
 import co.pragma.model.estadosolicitud.gateways.EstadoSolicitudRepository;

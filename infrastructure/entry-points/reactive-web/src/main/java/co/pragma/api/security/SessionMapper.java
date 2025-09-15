@@ -1,6 +1,6 @@
 package co.pragma.api.security;
 
-import co.pragma.model.cliente.Session;
+import co.pragma.model.session.Session;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;

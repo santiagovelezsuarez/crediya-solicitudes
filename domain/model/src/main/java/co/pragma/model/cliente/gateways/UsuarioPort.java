@@ -1,6 +1,6 @@
 package co.pragma.model.cliente.gateways;
 
-import co.pragma.model.cliente.ClienteInfo;
+import co.pragma.model.cliente.projection.ClienteInfo;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

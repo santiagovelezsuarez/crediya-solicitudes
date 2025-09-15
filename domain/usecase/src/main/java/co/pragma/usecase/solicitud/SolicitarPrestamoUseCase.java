@@ -2,7 +2,7 @@ package co.pragma.usecase.solicitud;
 
 import co.pragma.exception.business.TipoPrestamoNotFoundException;
 import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
-import co.pragma.model.solicitudprestamo.SolicitarPrestamoCommand;
+import co.pragma.model.solicitudprestamo.command.SolicitarPrestamoCommand;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
 import co.pragma.model.tipoprestamo.TipoPrestamo;
@@ -22,8 +22,7 @@ public class SolicitarPrestamoUseCase {
     public Mono<SolicitudPrestamo> execute(SolicitarPrestamoCommand cmd) {
         return tipoPrestamoRepository.findByNombre(cmd.tipoPrestamo())
                 .switchIfEmpty(Mono.error(new TipoPrestamoNotFoundException()))
-                .flatMap(tipo -> tipoPrestamoValidator.validate(cmd)
-                        .thenReturn(toInitialEntity(cmd, tipo)))
+                .flatMap(tipo -> tipoPrestamoValidator.validate(cmd).thenReturn(toInitialEntity(cmd, tipo)))
                 .flatMap(solicitudPrestamoRepository::save);
     }
 

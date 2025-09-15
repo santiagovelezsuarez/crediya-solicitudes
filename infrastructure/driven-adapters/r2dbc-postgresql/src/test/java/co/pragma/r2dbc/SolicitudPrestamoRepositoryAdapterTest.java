@@ -1,6 +1,6 @@
 package co.pragma.r2dbc;
 
-import co.pragma.error.ErrorCode;
+import co.pragma.exception.ErrorCode;
 import co.pragma.exception.InfrastructureException;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.r2dbc.adapter.SolicitudPrestamoReactiveRepositoryAdapter;

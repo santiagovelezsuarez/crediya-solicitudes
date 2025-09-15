@@ -5,13 +5,12 @@ import co.pragma.api.dto.DtoValidator;
 import co.pragma.api.dto.request.AprobarSolicitudDTO;
 import co.pragma.api.dto.request.SolicitarPrestamoDTO;
 import co.pragma.api.mapper.SolicitudPrestamoDtoMapper;
-import co.pragma.model.cliente.Permission;
-import co.pragma.model.cliente.PermissionValidator;
-import co.pragma.model.cliente.gateways.SessionProvider;
+import co.pragma.model.session.Permission;
+import co.pragma.model.session.PermissionValidator;
+import co.pragma.model.session.gateways.SessionProvider;
 import co.pragma.usecase.solicitud.AprobarSolicitudPrestamoUseCase;
 import co.pragma.usecase.solicitud.ListarSolicitudesRevisionManualUseCase;
 import co.pragma.usecase.solicitud.SolicitarPrestamoUseCase;
-import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -32,7 +31,6 @@ public class SolicitudPrestamoHandler {
     private final ResponseService responseService;
     private final PermissionValidator permissionValidator;
     private final SessionProvider sessionProvider;
-    private final Validator validator;
 
     public Mono<ServerResponse> listenRegistrarSolicitud(ServerRequest serverRequest) {
         log.debug("Petición recibida para registrar solicitud de prestamo");

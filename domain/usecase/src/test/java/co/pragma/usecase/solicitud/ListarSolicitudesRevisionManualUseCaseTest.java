@@ -1,10 +1,10 @@
 package co.pragma.usecase.solicitud;
 
-import co.pragma.model.cliente.ClienteInfo;
+import co.pragma.model.cliente.projection.ClienteInfo;
 import co.pragma.model.cliente.gateways.UsuarioPort;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
-import co.pragma.model.tipoprestamo.TipoPrestamoInfo;
+import co.pragma.model.tipoprestamo.projection.TipoPrestamoInfo;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

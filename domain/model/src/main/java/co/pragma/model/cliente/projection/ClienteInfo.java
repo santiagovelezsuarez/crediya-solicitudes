@@ -1,4 +1,4 @@
-package co.pragma.model.cliente;
+package co.pragma.model.cliente.projection;
 
 import lombok.Builder;
 import java.math.BigDecimal;
@@ -10,4 +10,5 @@ public record ClienteInfo(
         String email,
         String nombre,
         BigDecimal salarioBase,
-        BigDecimal bigDecimal) {}
+        BigDecimal bigDecimal
+) {}

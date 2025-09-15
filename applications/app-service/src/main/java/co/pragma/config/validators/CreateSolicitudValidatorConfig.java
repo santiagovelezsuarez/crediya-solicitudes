@@ -1,8 +1,8 @@
 package co.pragma.config.validators;
 
 import co.pragma.api.security.SecurityContextSessionProvider;
-import co.pragma.model.cliente.PermissionValidator;
-import co.pragma.model.cliente.gateways.SessionProvider;
+import co.pragma.model.session.PermissionValidator;
+import co.pragma.model.session.gateways.SessionProvider;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
 
 import co.pragma.usecase.solicitud.businessrules.TipoPrestamoValidator;

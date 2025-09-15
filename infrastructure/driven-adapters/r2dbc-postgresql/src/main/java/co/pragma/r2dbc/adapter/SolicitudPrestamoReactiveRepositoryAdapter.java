@@ -1,6 +1,6 @@
 package co.pragma.r2dbc.adapter;
 
-import co.pragma.error.ErrorCode;
+import co.pragma.exception.ErrorCode;
 import co.pragma.exception.InfrastructureException;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @Repository
@@ -26,7 +25,7 @@ public class SolicitudPrestamoReactiveRepositoryAdapter implements SolicitudPres
         log.debug("Registrando solicitud: {}", solicitud);
         return repository.save(SolicitudPrestamoEntityMapper.toEntity(solicitud))
                 .map(SolicitudPrestamoEntityMapper::toDomain)
-                .doOnSuccess(s -> log.trace("Solicitud registrada con éxito: {}", s.getId()))
+                .doOnNext(s -> log.trace("Solicitud registrada con éxito: {}", s.getId()))
                 .onErrorMap(ex -> new InfrastructureException(ErrorCode.DB_ERROR.name(), ex));
     }
 

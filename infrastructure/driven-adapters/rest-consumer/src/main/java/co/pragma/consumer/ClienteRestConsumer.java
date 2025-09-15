@@ -1,9 +1,11 @@
 package co.pragma.consumer;
 
-import co.pragma.error.ErrorCode;
+import co.pragma.exception.ErrorCode;
 import co.pragma.exception.InfrastructureException;
-import co.pragma.model.cliente.*;
 import co.pragma.model.cliente.gateways.UsuarioPort;
+import co.pragma.model.cliente.projection.ClienteInfo;
+import co.pragma.model.cliente.projection.ClientesInfoList;
+import co.pragma.model.session.gateways.TokenProvider;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

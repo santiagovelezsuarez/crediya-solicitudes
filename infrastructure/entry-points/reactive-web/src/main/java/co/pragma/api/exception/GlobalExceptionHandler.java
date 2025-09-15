@@ -3,7 +3,7 @@ package co.pragma.api.exception;
 import co.pragma.api.ErrorCodeHttpMapper;
 import co.pragma.api.dto.DtoValidationException;
 import co.pragma.api.dto.response.ErrorResponse;
-import co.pragma.error.ErrorCode;
+import co.pragma.exception.ErrorCode;
 import co.pragma.exception.InfrastructureException;
 import co.pragma.exception.business.BusinessException;
 import lombok.extern.slf4j.Slf4j;

@@ -5,25 +5,16 @@ import co.pragma.api.dto.request.SolicitarPrestamoDTO;
 import co.pragma.api.dto.response.SolicitudPrestamoResponseDTO;
 import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
 import co.pragma.model.solicitudprestamo.*;
-
-import java.util.UUID;
+import co.pragma.model.solicitudprestamo.command.AprobarSolicitudCommand;
+import co.pragma.model.solicitudprestamo.command.SolicitarPrestamoCommand;
 
 public class SolicitudPrestamoDtoMapper {
 
     private SolicitudPrestamoDtoMapper() {}
 
-    public static SolicitudPrestamo toDomain(SolicitarPrestamoDTO dto, String userId) {
-        return SolicitudPrestamo.builder()
-                .idCliente(UUID.fromString(userId))
-                .monto(dto.getMonto())
-                .plazoEnMeses(dto.getPlazoEnMeses())
-                .estado(EstadoSolicitudCodigo.PENDIENTE_REVISION) // siempre inicia pendiente
-                .build();
-    }
-
     public static SolicitudPrestamoResponseDTO toResponse(SolicitudPrestamo solicitud) {
         return SolicitudPrestamoResponseDTO.builder()
-                .id(solicitud.getId() != null ? solicitud.getId().toString() : null)
+                .id(String.valueOf(solicitud.getId()))
                 .monto(solicitud.getMonto())
                 .plazoEnMeses(solicitud.getPlazoEnMeses())
                 .tipoPrestamo(solicitud.getIdTipoPrestamo() != null ? solicitud.getIdTipoPrestamo().toString() : null)

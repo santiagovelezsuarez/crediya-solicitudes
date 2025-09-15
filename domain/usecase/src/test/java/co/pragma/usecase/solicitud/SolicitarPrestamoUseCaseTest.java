@@ -1,7 +1,7 @@
 package co.pragma.usecase.solicitud;
 
 import co.pragma.exception.business.TipoPrestamoNotFoundException;
-import co.pragma.model.solicitudprestamo.SolicitarPrestamoCommand;
+import co.pragma.model.solicitudprestamo.command.SolicitarPrestamoCommand;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
 import co.pragma.model.tipoprestamo.TipoPrestamo;

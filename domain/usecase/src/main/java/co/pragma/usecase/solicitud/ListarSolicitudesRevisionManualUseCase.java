@@ -1,12 +1,12 @@
 package co.pragma.usecase.solicitud;
 
-import co.pragma.model.cliente.ClienteInfo;
+import co.pragma.model.cliente.projection.ClienteInfo;
 import co.pragma.model.cliente.gateways.UsuarioPort;
 import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
 import co.pragma.model.solicitudprestamo.projection.SolicitudPrestamoRevision;
-import co.pragma.model.tipoprestamo.TipoPrestamoInfo;
+import co.pragma.model.tipoprestamo.projection.TipoPrestamoInfo;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
@@ -53,7 +53,7 @@ public class ListarSolicitudesRevisionManualUseCase {
                 .collectMap(ClienteInfo::id, cliente -> cliente);
 
         Mono<Map<UUID, TipoPrestamoInfo>> tiposMono = tipoPrestamoRepository.findByIdIn(tipoIds)
-                .collectMap(TipoPrestamoInfo::getId, tipo -> tipo);
+                .collectMap(TipoPrestamoInfo::id, tipo -> tipo);
 
         return Mono.zip(clientesMono, tiposMono)
                 .map(tuple -> {
@@ -75,13 +75,13 @@ public class ListarSolicitudesRevisionManualUseCase {
                 .id(solicitud.getId())
                 .monto(solicitud.getMonto())
                 .plazoEnMeses(solicitud.getPlazoEnMeses())
-                .tipoPrestamo(tipoPrestamoInfo.getNombre())
+                .tipoPrestamo(tipoPrestamoInfo.nombre())
                 .estado(EstadoSolicitudCodigo.valueOf(solicitud.getEstado().name()))
-                .tasaInteres(tipoPrestamoInfo.getTasaInteres())
+                .tasaInteres(tipoPrestamoInfo.tasaInteres())
                 .emailCliente(cliente.email())
                 .nombreCliente(cliente.nombre())
                 .salarioBase(cliente.salarioBase())
-                .montoMensualSolicitud(solicitud.calcularCuota(tipoPrestamoInfo.getTasaInteres()))
+                .montoMensualSolicitud(solicitud.calcularCuota(tipoPrestamoInfo.tasaInteres()))
                 .build();
     }
 }

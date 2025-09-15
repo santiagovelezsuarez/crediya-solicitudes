@@ -1,7 +1,7 @@
 package co.pragma.api.security;
 
 import co.pragma.exception.business.ForbiddenException;
-import co.pragma.model.cliente.TokenProvider;
+import co.pragma.model.session.gateways.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
