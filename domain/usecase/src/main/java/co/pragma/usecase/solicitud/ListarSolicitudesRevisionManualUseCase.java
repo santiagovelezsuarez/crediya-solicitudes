@@ -23,7 +23,7 @@ public class ListarSolicitudesRevisionManualUseCase {
     private final TipoPrestamoRepository tipoPrestamoRepository;
     private final UsuarioPort usuarioPort;
 
-    private static final List<Short> ESTADOS_REVISION = List.of(
+    private static final List<Integer> ESTADOS_REVISION = List.of(
             EstadoSolicitudCodigo.PENDIENTE_REVISION.getCode(),
             EstadoSolicitudCodigo.RECHAZADA.getCode(),
             EstadoSolicitudCodigo.REVISION_MANUAL.getCode()

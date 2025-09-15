@@ -1,13 +1,16 @@
 package co.pragma.api.handler;
 
 import co.pragma.api.adapters.ResponseService;
+import co.pragma.api.dto.AprobarSolicitudDTO;
 import co.pragma.api.dto.SolicitarPrestamoDTO;
-import co.pragma.api.dto.SolicitudPrestamoDtoMapper;
+import co.pragma.api.mapper.SolicitudPrestamoDtoMapper;
 import co.pragma.model.cliente.Permission;
 import co.pragma.model.cliente.PermissionValidator;
 import co.pragma.model.cliente.gateways.SessionProvider;
+import co.pragma.usecase.solicitud.AprobarSolicitudPrestamoUseCase;
 import co.pragma.usecase.solicitud.ListarSolicitudesRevisionManualUseCase;
-import co.pragma.usecase.solicitud.SolicitudPrestamoUseCase;
+import co.pragma.usecase.solicitud.SolicitarPrestamoUseCase;
+import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -20,31 +23,31 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class SolicitudPrestamoHandler {
 
-    private final SolicitudPrestamoUseCase solicitudPrestamoUseCase;
+    private final SolicitarPrestamoUseCase solicitarPrestamoUseCase;
     private final ListarSolicitudesRevisionManualUseCase listarSolicitudesRevisionManualUseCase;
+    private final AprobarSolicitudPrestamoUseCase aprobarSolicitudPrestamoUseCase;
 
     private final ResponseService responseService;
-    private final SolicitudPrestamoDtoMapper solicitudDtoMapper;
     private final PermissionValidator permissionValidator;
-    private final SolicitudPrestamoDtoMapper solicitudPrestamoDtoMapper;
     private final SessionProvider sessionProvider;
+    private final Validator validator;
 
-    public Mono<ServerResponse> listenCreateSolicitud(ServerRequest serverRequest) {
-        log.debug("Petición recibida para crear solicitud de prestamo");
+    public Mono<ServerResponse> listenRegistrarSolicitud(ServerRequest serverRequest) {
+        log.debug("Petición recibida para registrar solicitud de prestamo");
         return serverRequest
                 .bodyToMono(SolicitarPrestamoDTO.class)
                 .flatMap(dto -> permissionValidator
                         .requirePermission(Permission.SOLICITAR_PRESTAMO)
                         .then(sessionProvider.getCurrentSession())
-                        .map(session -> solicitudPrestamoDtoMapper.toCommand(dto, session.getUserId()))
+                        .map(session -> SolicitudPrestamoDtoMapper.toCommand(dto, session.getUserId()))
                 )
-                .flatMap(solicitudPrestamoUseCase::execute)
+                .flatMap(solicitarPrestamoUseCase::execute)
                 .doOnNext(s -> log.trace("Solicitud de préstamo registrada con éxito: {}", s.getId()))
-                .map(solicitudDtoMapper::toResponse)
+                .map(SolicitudPrestamoDtoMapper::toResponse)
                 .flatMap(responseService::createdJson);
     }
 
-    public Mono<ServerResponse> listenListSolicitudesPendientes(ServerRequest serverRequest) {
+    public Mono<ServerResponse> listenListarSolicitudesPendientes(ServerRequest serverRequest) {
         log.debug("Petición recibida para listar solicitudes pendientes");
 
         int page = serverRequest.queryParam("page").map(Integer::parseInt).orElse(0);
@@ -53,6 +56,21 @@ public class SolicitudPrestamoHandler {
         return permissionValidator.requirePermission(Permission.LISTAR_SOLICITUDES_PENDIENTES)
                 .then(listarSolicitudesRevisionManualUseCase.execute(page, size))
                 .doOnNext(s -> log.trace("Solicitud listada: {}", s))
+                .flatMap(responseService::okJson);
+    }
+
+    public Mono<ServerResponse> listenAprobarSolicitud(ServerRequest serverRequest) {
+        log.debug("Petición recibida para aprobar/rechazar solicitud de credito");
+        return serverRequest
+                .bodyToMono(AprobarSolicitudDTO.class)
+                .flatMap(dto -> permissionValidator
+                        .requirePermission(Permission.APROBAR_SOLICITUD)
+                        .then(sessionProvider.getCurrentSession())
+                        .map(session -> SolicitudPrestamoDtoMapper.toAprobarCommand(dto))
+                )
+                .flatMap(aprobarSolicitudPrestamoUseCase::execute)
+                .doOnNext(solicitud -> log.info("Solicitud {} actualizada", solicitud.getCodigo()))
+                .map(SolicitudPrestamoDtoMapper::toResponse)
                 .flatMap(responseService::okJson);
     }
 }

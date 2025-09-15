@@ -23,9 +23,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
+import static org.springframework.web.reactive.function.server.RequestPredicates.*;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
-import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 
 @Configuration
 public class RouterRest {
@@ -87,8 +86,9 @@ public class RouterRest {
             )
     })
     public RouterFunction<ServerResponse> solicitudPrestamoRoutes(SolicitudPrestamoHandler solicitudPrestamoHandler) {
-        return route(POST("/api/v1/solicitud-prestamo"), solicitudPrestamoHandler::listenCreateSolicitud)
-                .andRoute(GET("/api/v1/solicitud-prestamo"), solicitudPrestamoHandler::listenListSolicitudesPendientes);
+        return route(POST("/api/v1/solicitud-prestamo"), solicitudPrestamoHandler::listenRegistrarSolicitud)
+                .andRoute(GET("/api/v1/solicitud-prestamo"), solicitudPrestamoHandler::listenListarSolicitudesPendientes)
+                .andRoute(PUT("/api/v1/solicitud-prestamo"), solicitudPrestamoHandler::listenAprobarSolicitud);
     }
 
     @Bean

@@ -2,22 +2,32 @@ package co.pragma.model.estadosolicitud;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
 import java.util.Arrays;
 
 @Getter
 @RequiredArgsConstructor
 public enum EstadoSolicitudCodigo {
-    PENDIENTE_REVISION((short) 1),
-    RECHAZADA((short) 2),
-    REVISION_MANUAL((short) 3);
+    PENDIENTE_REVISION(1),
+    REVISION_MANUAL(2),
+    APROBADA(3),
+    RECHAZADA(4);
 
-    private final short code;
+    private final int code;
 
-    public static EstadoSolicitudCodigo valueOf(short code) {
+    public static EstadoSolicitudCodigo fromCode(int code) {
         return Arrays.stream(values())
-                .filter(estado -> estado.getCode() == code)
+                .filter(e -> e.code == code)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Estado inválido: " + code));
     }
+
+    public static EstadoSolicitudCodigo fromCode(Integer code) {
+        if (code == null) return null;
+        return fromCode(code.intValue());
+    }
+
+    public int toCode() {
+        return this.code;
+    }
+
 }

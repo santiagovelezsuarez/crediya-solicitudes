@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface SolicitudPrestamoRepository {
     Mono<SolicitudPrestamo> save(SolicitudPrestamo solicitudPrestamo);
-
-    Flux<SolicitudPrestamo> findByIdEstadoIn(List<Short> estados, int page, int size);
+    Mono<SolicitudPrestamo> findByCodigo(String codigo);
+    Flux<SolicitudPrestamo> findByIdEstadoIn(List<Integer> estados, int page, int size);
+    Mono<Void> markAsNotificado(String codigo, Boolean notificado);
 }

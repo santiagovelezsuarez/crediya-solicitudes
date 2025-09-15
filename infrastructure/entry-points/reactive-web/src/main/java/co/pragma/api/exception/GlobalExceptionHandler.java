@@ -96,7 +96,7 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
         return Optional.ofNullable(ex.getCause())
                 .map(Throwable::getCause)
                 .map(Throwable::getMessage)
-                .orElse("--no root cause--");
+                .orElse(ex.getMessage());
     }
 
     @Override

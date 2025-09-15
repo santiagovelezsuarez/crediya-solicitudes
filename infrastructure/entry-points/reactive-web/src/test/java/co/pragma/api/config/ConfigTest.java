@@ -3,14 +3,14 @@ package co.pragma.api.config;
 import co.pragma.api.adapters.ResponseService;
 import co.pragma.api.handler.SolicitudPrestamoHandler;
 import co.pragma.api.RouterRest;
-import co.pragma.api.dto.SolicitudPrestamoDtoMapper;
+import co.pragma.api.mapper.SolicitudPrestamoDtoMapper;
 import co.pragma.api.security.JwtService;
 import co.pragma.model.cliente.PermissionValidator;
 import co.pragma.model.cliente.gateways.SessionProvider;
 import co.pragma.model.estadosolicitud.gateways.EstadoSolicitudRepository;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
 import co.pragma.usecase.solicitud.ListarSolicitudesRevisionManualUseCase;
-import co.pragma.usecase.solicitud.SolicitudPrestamoUseCase;
+import co.pragma.usecase.solicitud.SolicitarPrestamoUseCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
@@ -28,7 +28,7 @@ class ConfigTest {
     private WebTestClient webTestClient;
 
     @MockitoBean
-    private SolicitudPrestamoUseCase solicitudPrestamoUseCase;
+    private SolicitarPrestamoUseCase solicitarPrestamoUseCase;
 
     @MockitoBean
     private ResponseService responseService;
