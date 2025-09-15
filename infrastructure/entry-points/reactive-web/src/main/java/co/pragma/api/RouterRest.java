@@ -1,8 +1,8 @@
 package co.pragma.api;
 
-import co.pragma.api.dto.ErrorResponse;
-import co.pragma.api.dto.SolicitarPrestamoDTO;
-import co.pragma.api.dto.SolicitudPrestamoResponseDTO;
+import co.pragma.api.dto.response.ErrorResponse;
+import co.pragma.api.dto.request.SolicitarPrestamoDTO;
+import co.pragma.api.dto.response.SolicitudPrestamoResponseDTO;
 import co.pragma.api.handler.SolicitudPrestamoHandler;
 import co.pragma.model.solicitudprestamo.projection.SolicitudPrestamoRevision;
 import io.swagger.v3.oas.annotations.Operation;

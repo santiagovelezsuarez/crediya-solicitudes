@@ -1,6 +1,6 @@
 package co.pragma.api.exception;
 
-import co.pragma.api.dto.ErrorResponse;
+import co.pragma.api.dto.response.ErrorResponse;
 import co.pragma.error.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.server.ServerRequest;

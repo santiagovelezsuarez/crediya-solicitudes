@@ -1,6 +1,8 @@
 package co.pragma.api.mapper;
 
-import co.pragma.api.dto.*;
+import co.pragma.api.dto.request.AprobarSolicitudDTO;
+import co.pragma.api.dto.request.SolicitarPrestamoDTO;
+import co.pragma.api.dto.response.SolicitudPrestamoResponseDTO;
 import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
 import co.pragma.model.solicitudprestamo.*;
 

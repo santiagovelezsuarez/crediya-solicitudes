@@ -1,8 +1,9 @@
 package co.pragma.api.handler;
 
 import co.pragma.api.adapters.ResponseService;
-import co.pragma.api.dto.AprobarSolicitudDTO;
-import co.pragma.api.dto.SolicitarPrestamoDTO;
+import co.pragma.api.dto.DtoValidator;
+import co.pragma.api.dto.request.AprobarSolicitudDTO;
+import co.pragma.api.dto.request.SolicitarPrestamoDTO;
 import co.pragma.api.mapper.SolicitudPrestamoDtoMapper;
 import co.pragma.model.cliente.Permission;
 import co.pragma.model.cliente.PermissionValidator;
@@ -26,6 +27,7 @@ public class SolicitudPrestamoHandler {
     private final SolicitarPrestamoUseCase solicitarPrestamoUseCase;
     private final ListarSolicitudesRevisionManualUseCase listarSolicitudesRevisionManualUseCase;
     private final AprobarSolicitudPrestamoUseCase aprobarSolicitudPrestamoUseCase;
+    private final DtoValidator dtoValidator;
 
     private final ResponseService responseService;
     private final PermissionValidator permissionValidator;
@@ -36,6 +38,7 @@ public class SolicitudPrestamoHandler {
         log.debug("Petición recibida para registrar solicitud de prestamo");
         return serverRequest
                 .bodyToMono(SolicitarPrestamoDTO.class)
+                .flatMap(dtoValidator::validate)
                 .flatMap(dto -> permissionValidator
                         .requirePermission(Permission.SOLICITAR_PRESTAMO)
                         .then(sessionProvider.getCurrentSession())
@@ -63,6 +66,7 @@ public class SolicitudPrestamoHandler {
         log.debug("Petición recibida para aprobar/rechazar solicitud de credito");
         return serverRequest
                 .bodyToMono(AprobarSolicitudDTO.class)
+                .flatMap(dtoValidator::validate)
                 .flatMap(dto -> permissionValidator
                         .requirePermission(Permission.APROBAR_SOLICITUD)
                         .then(sessionProvider.getCurrentSession())

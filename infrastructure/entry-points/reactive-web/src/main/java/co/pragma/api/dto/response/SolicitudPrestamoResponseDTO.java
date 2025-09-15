@@ -1,4 +1,4 @@
-package co.pragma.api.dto;
+package co.pragma.api.dto.response;
 
 import lombok.Builder;
 
