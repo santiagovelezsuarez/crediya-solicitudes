@@ -20,7 +20,7 @@ import java.util.UUID;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class SolicitudPrestamoUseCaseTest {
+class SolicitarPrestamoUseCaseTest {
 
     @Mock
     private SolicitudPrestamoRepository solicitudPrestamoRepository;
@@ -32,7 +32,7 @@ class SolicitudPrestamoUseCaseTest {
     private TipoPrestamoValidator tipoPrestamoValidator;
 
     @InjectMocks
-    private SolicitudPrestamoUseCase useCase;
+    private SolicitarPrestamoUseCase useCase;
 
     private SolicitarPrestamoCommand cmd;
     private TipoPrestamo tipoPrestamo;

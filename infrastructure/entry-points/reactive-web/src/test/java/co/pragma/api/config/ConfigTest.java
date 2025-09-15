@@ -10,7 +10,7 @@ import co.pragma.model.cliente.gateways.SessionProvider;
 import co.pragma.model.estadosolicitud.gateways.EstadoSolicitudRepository;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
 import co.pragma.usecase.solicitud.ListarSolicitudesRevisionManualUseCase;
-import co.pragma.usecase.solicitud.SolicitudPrestamoUseCase;
+import co.pragma.usecase.solicitud.SolicitarPrestamoUseCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
@@ -28,7 +28,7 @@ class ConfigTest {
     private WebTestClient webTestClient;
 
     @MockitoBean
-    private SolicitudPrestamoUseCase solicitudPrestamoUseCase;
+    private SolicitarPrestamoUseCase solicitarPrestamoUseCase;
 
     @MockitoBean
     private ResponseService responseService;

@@ -4,7 +4,7 @@ import co.pragma.model.cliente.gateways.UsuarioPort;
 import co.pragma.model.estadosolicitud.gateways.EstadoSolicitudRepository;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
-import co.pragma.usecase.solicitud.SolicitudPrestamoUseCase;
+import co.pragma.usecase.solicitud.SolicitarPrestamoUseCase;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -62,8 +62,8 @@ class UseCasesConfigTest {
         }
 
         @Bean
-        public SolicitudPrestamoUseCase solicitudPrestamoUseCase() {
-            return Mockito.mock(SolicitudPrestamoUseCase.class);
+        public SolicitarPrestamoUseCase solicitudPrestamoUseCase() {
+            return Mockito.mock(SolicitarPrestamoUseCase.class);
         }
 
 

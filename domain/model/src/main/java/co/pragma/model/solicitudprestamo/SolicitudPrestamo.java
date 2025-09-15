@@ -12,11 +12,13 @@ import java.util.UUID;
 @Builder(toBuilder = true)
 public class SolicitudPrestamo {
     private UUID id;
+    private String codigo;
     private UUID idCliente;
     private UUID idTipoPrestamo;
     private BigDecimal monto;
     private Integer plazoEnMeses;
     private EstadoSolicitudCodigo estado;
+    private Boolean notificado;
 
     /**
      * Ref: HU7
@@ -50,10 +52,4 @@ public class SolicitudPrestamo {
         return estado == EstadoSolicitudCodigo.PENDIENTE_REVISION ||
                estado == EstadoSolicitudCodigo.REVISION_MANUAL;
     }
-
-    public boolean estaFinalizada() {
-        return estado == EstadoSolicitudCodigo.APROBADA ||
-                estado == EstadoSolicitudCodigo.RECHAZADA;
-    }
-
 }

@@ -57,6 +57,5 @@ resilience4j:
         waitDurationInOpenState: "10s"
 adapter:
   sqs:
-    region: "us-east-1"
-    queueUrl: "http://localhost:4566/000000000000/sample"
-    endpoint: "http://localhost:4566 # For localstack only"
+    region: ${AWS_REGION:us-east-2}
+    queueUrl: ${AWS_QUEUE:https://sqs.us-east-2.amazonaws.com/488340573632/queueCrediyaEstadoSolicitudes}

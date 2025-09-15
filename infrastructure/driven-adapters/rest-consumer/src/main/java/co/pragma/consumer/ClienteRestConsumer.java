@@ -30,6 +30,19 @@ public class ClienteRestConsumer implements UsuarioPort {
                 .flatMapMany(token -> callAuthService(userIds, token));
     }
 
+    @Override
+    public Mono<ClienteInfo> getClienteById(UUID id) {
+        return tokenProvider.getCurrentToken()
+                .flatMap(token -> webClient.get()
+                        .uri("/usuarios/{id}", id)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .retrieve()
+                        .bodyToMono(ClienteInfo.class)
+                        .onErrorMap(ex -> new InfrastructureException(ErrorCode.DB_ERROR.name(), ex))
+                );
+    }
+
+
     @CircuitBreaker(name = "AUTH_SERVICE", fallbackMethod = "fallbackGetClientesByIdIn")
     private Flux<ClienteInfo> callAuthService(List<UUID> userIds, String token) {
         Mono<ClientesInfoList> response = webClient.post()

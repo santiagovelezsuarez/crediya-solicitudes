@@ -9,7 +9,7 @@ import co.pragma.model.cliente.PermissionValidator;
 import co.pragma.model.cliente.gateways.SessionProvider;
 import co.pragma.usecase.solicitud.AprobarSolicitudPrestamoUseCase;
 import co.pragma.usecase.solicitud.ListarSolicitudesRevisionManualUseCase;
-import co.pragma.usecase.solicitud.SolicitudPrestamoUseCase;
+import co.pragma.usecase.solicitud.SolicitarPrestamoUseCase;
 import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class SolicitudPrestamoHandler {
 
-    private final SolicitudPrestamoUseCase solicitudPrestamoUseCase;
+    private final SolicitarPrestamoUseCase solicitarPrestamoUseCase;
     private final ListarSolicitudesRevisionManualUseCase listarSolicitudesRevisionManualUseCase;
     private final AprobarSolicitudPrestamoUseCase aprobarSolicitudPrestamoUseCase;
 
@@ -41,7 +41,7 @@ public class SolicitudPrestamoHandler {
                         .then(sessionProvider.getCurrentSession())
                         .map(session -> SolicitudPrestamoDtoMapper.toCommand(dto, session.getUserId()))
                 )
-                .flatMap(solicitudPrestamoUseCase::execute)
+                .flatMap(solicitarPrestamoUseCase::execute)
                 .doOnNext(s -> log.trace("Solicitud de préstamo registrada con éxito: {}", s.getId()))
                 .map(SolicitudPrestamoDtoMapper::toResponse)
                 .flatMap(responseService::createdJson);
@@ -69,7 +69,7 @@ public class SolicitudPrestamoHandler {
                         .map(session -> SolicitudPrestamoDtoMapper.toAprobarCommand(dto))
                 )
                 .flatMap(aprobarSolicitudPrestamoUseCase::execute)
-                .doOnNext(count -> log.info("Solicitudes actualizadas: {}",count))
+                .doOnNext(solicitud -> log.info("Solicitud {} actualizada", solicitud.getCodigo()))
                 .map(SolicitudPrestamoDtoMapper::toResponse)
                 .flatMap(responseService::okJson);
     }

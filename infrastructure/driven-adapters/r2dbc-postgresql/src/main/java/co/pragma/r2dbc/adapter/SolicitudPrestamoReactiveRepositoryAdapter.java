@@ -31,9 +31,9 @@ public class SolicitudPrestamoReactiveRepositoryAdapter implements SolicitudPres
     }
 
     @Override
-    public Mono<SolicitudPrestamo> findById(UUID id) {
-        log.debug("Finding Solicitud Prestamo by ID: {}", id);
-        return repository.findById(id)
+    public Mono<SolicitudPrestamo> findByCodigo(String codigo) {
+        log.debug("Buscando Solicitud Prestamo by codigo: {}", codigo);
+        return repository.findByCodigo(codigo)
                 .map(SolicitudPrestamoEntityMapper::toDomain);
     }
 
@@ -46,6 +46,10 @@ public class SolicitudPrestamoReactiveRepositoryAdapter implements SolicitudPres
                 .onErrorMap(ex -> new InfrastructureException(ErrorCode.DB_ERROR.name(), ex));
     }
 
-
+    @Override
+    public Mono<Void> markAsNotificado(String codigo, Boolean notificado) {
+        log.info("Marcando solicitud {} como notificada en {}", codigo, notificado);
+        return repository.markAsNotificado(codigo, notificado);
+    }
 
 }

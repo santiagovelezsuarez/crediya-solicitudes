@@ -40,7 +40,7 @@ public class SolicitudPrestamoDtoMapper {
 
     public static AprobarSolicitudCommand toAprobarCommand(AprobarSolicitudDTO dto) {
         return AprobarSolicitudCommand.builder()
-                .id(dto.getIdSolicitud())
+                .codigoSolicitud(dto.getCodigoSolicitud())
                 .estado(EstadoSolicitudCodigo.valueOf(dto.getDecisionFinal().toUpperCase()))
                 .build();
     }

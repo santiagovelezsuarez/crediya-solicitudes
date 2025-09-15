@@ -1,10 +1,7 @@
 package co.pragma.usecase.solicitud;
 
-import co.pragma.exception.business.RolNotFoundException;
 import co.pragma.exception.business.TipoPrestamoNotFoundException;
-import co.pragma.model.cliente.Cliente;
 import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
-import co.pragma.model.solicitudprestamo.AprobarSolicitudCommand;
 import co.pragma.model.solicitudprestamo.SolicitarPrestamoCommand;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
@@ -16,7 +13,7 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-public class SolicitudPrestamoUseCase {
+public class SolicitarPrestamoUseCase {
 
     private final SolicitudPrestamoRepository solicitudPrestamoRepository;
     private final TipoPrestamoRepository tipoPrestamoRepository;
@@ -37,6 +34,16 @@ public class SolicitudPrestamoUseCase {
                 .monto(cmd.monto())
                 .plazoEnMeses(cmd.plazoEnMeses())
                 .estado(EstadoSolicitudCodigo.PENDIENTE_REVISION)
+                .codigo(generarCodigo())
                 .build();
+    }
+
+    private String generarCodigo() {
+        String anio = String.valueOf(java.time.Year.now().getValue());
+        String mes = String.format("%02d", java.time.LocalDate.now().getMonthValue());
+        String dia = String.format("%02d", java.time.LocalDate.now().getDayOfMonth());
+        String sufijo = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        String codigo = "SP-" + anio + mes + dia + "-" + sufijo;
+        return codigo;
     }
 }
