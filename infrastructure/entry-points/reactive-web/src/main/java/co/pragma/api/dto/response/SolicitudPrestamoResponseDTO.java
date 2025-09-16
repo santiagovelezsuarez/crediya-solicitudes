@@ -9,6 +9,7 @@ public record SolicitudPrestamoResponseDTO(
     String id,
     BigDecimal monto,
     int plazoEnMeses,
+    BigDecimal tasaInteres,
     String tipoPrestamo,
     String estado
 ) {

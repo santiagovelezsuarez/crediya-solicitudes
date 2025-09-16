@@ -2,9 +2,10 @@ package co.pragma.sqs.sender.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.Map;
+
 @ConfigurationProperties(prefix = "adapter.sqs")
-public record SQSSenderProperties(
+public record SqsQueuesProperties(
      String region,
-     String queueUrl,
-     String endpoint){
-}
+     Map<String, String> queues
+) {}

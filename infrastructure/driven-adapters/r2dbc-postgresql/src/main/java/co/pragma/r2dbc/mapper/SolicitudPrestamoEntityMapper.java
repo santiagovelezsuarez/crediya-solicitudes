@@ -18,6 +18,7 @@ public class SolicitudPrestamoEntityMapper {
                 .idTipoPrestamo(entity.getIdTipoPrestamo())
                 .monto(entity.getMonto())
                 .plazoEnMeses(entity.getPlazoEnMeses())
+                .tasaInteres(entity.getTasaInteres())
                 .estado(entity.getIdEstado() != null
                         ? EstadoSolicitudCodigo.fromCode(entity.getIdEstado())
                         : null)
@@ -33,6 +34,7 @@ public class SolicitudPrestamoEntityMapper {
                 .idEstado(model.getEstado() != null ? model.getEstado().getCode() : null)
                 .monto(model.getMonto())
                 .plazoEnMeses(model.getPlazoEnMeses())
+                .tasaInteres(model.getTasaInteres())
                 .idTipoPrestamo(model.getIdTipoPrestamo())
                 .notificado(model.getNotificado())
                 .build();

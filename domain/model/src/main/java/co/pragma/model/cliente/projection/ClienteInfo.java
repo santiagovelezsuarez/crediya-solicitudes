@@ -9,6 +9,5 @@ public record ClienteInfo(
         UUID id,
         String email,
         String nombre,
-        BigDecimal salarioBase,
-        BigDecimal bigDecimal
+        BigDecimal salarioBase
 ) {}

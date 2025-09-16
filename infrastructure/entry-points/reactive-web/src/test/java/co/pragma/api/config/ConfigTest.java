@@ -10,7 +10,7 @@ import co.pragma.model.cliente.gateways.UsuarioPort;
 import co.pragma.model.session.PermissionValidator;
 import co.pragma.model.session.gateways.SessionProvider;
 import co.pragma.model.estadosolicitud.gateways.EstadoSolicitudRepository;
-import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoEventPublisher;
+import co.pragma.model.solicitudprestamo.gateways.ResultadoSolicitudPublisher;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
 import co.pragma.usecase.solicitud.AprobarSolicitudPrestamoUseCase;
@@ -60,7 +60,7 @@ class ConfigTest {
     private AprobarSolicitudPrestamoUseCase aprobarSolicitudPrestamoUseCase;
 
     @MockitoBean
-    private SolicitudPrestamoEventPublisher solicitudPrestamoEventPublisher;
+    private ResultadoSolicitudPublisher resultadoSolicitudPublisher;
 
     @MockitoBean
     private SolicitudPrestamoRepository solicitudPrestamoRepository;

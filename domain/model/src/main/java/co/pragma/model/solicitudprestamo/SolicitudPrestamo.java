@@ -17,6 +17,7 @@ public class SolicitudPrestamo {
     private UUID idTipoPrestamo;
     private BigDecimal monto;
     private Integer plazoEnMeses;
+    private BigDecimal tasaInteres;
     private EstadoSolicitudCodigo estado;
     private Boolean notificado;
 

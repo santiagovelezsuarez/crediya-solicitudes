@@ -15,4 +15,8 @@ public class TipoPrestamo {
     private BigDecimal montoMaximo;
     private BigDecimal tasaInteres;
     private Boolean validacionAutomatica;
+
+    public boolean estaValidacionAutomatica() {
+        return validacionAutomatica;
+    }
 }

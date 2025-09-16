@@ -55,7 +55,10 @@ resilience4j:
         slidingWindowSize: 10
         minimumNumberOfCalls: 10
         waitDurationInOpenState: "10s"
+
 adapter:
   sqs:
     region: ${AWS_REGION:us-east-2}
-    queueUrl: ${AWS_QUEUE:https://sqs.us-east-2.amazonaws.com/488340573632/queueCrediyaEstadoSolicitudes}
+    queues:
+      validacionauto: ${AWS_AUTO_VALIDATION_QUEUE:https://sqs.us-east-2.amazonaws.com/488340573632/queueCrediyaValidacionAuto}
+      resultadoasesor: ${AWS_ASESOR_RESULT_QUEUE:https://sqs.us-east-2.amazonaws.com/488340573632/queueCrediyaEstadoSolicitudes}

@@ -8,9 +8,10 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public enum EstadoSolicitudCodigo {
     PENDIENTE_REVISION(1),
-    REVISION_MANUAL(2),
-    APROBADA(3),
-    RECHAZADA(4);
+    PENDIENTE_VALIDACION_AUTOMATICA(2),
+    REVISION_MANUAL(3),
+    APROBADA(4),
+    RECHAZADA(5);
 
     private final int code;
 

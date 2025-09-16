@@ -5,7 +5,7 @@ import co.pragma.exception.business.SolicitudPrestamoNotFound;
 import co.pragma.model.cliente.gateways.UsuarioPort;
 import co.pragma.model.solicitudprestamo.command.AprobarSolicitudCommand;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
-import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoEventPublisher;
+import co.pragma.model.solicitudprestamo.gateways.ResultadoSolicitudPublisher;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
 import co.pragma.model.solicitudprestamo.projection.EstadoSolicitudEvent;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class AprobarSolicitudPrestamoUseCase {
 
     private final SolicitudPrestamoRepository solicitudPrestamoRepository;
     private final UsuarioPort usuarioPort;
-    private final SolicitudPrestamoEventPublisher solicitudEventPublisher;
+    private final ResultadoSolicitudPublisher solicitudEventPublisher;
 
     public Mono<SolicitudPrestamo> execute(AprobarSolicitudCommand cmd) {
         return solicitudPrestamoRepository.findByCodigo(cmd.codigoSolicitud())
@@ -59,7 +59,7 @@ public class AprobarSolicitudPrestamoUseCase {
                             .estado(solicitud.getEstado().name())
                             .build();
 
-                    return solicitudEventPublisher.publishEstadoActualizado(event)
+                    return solicitudEventPublisher.publish(event)
                             .retryWhen(Retry.backoff(3, Duration.ofSeconds(1))
                                     .maxBackoff(Duration.ofSeconds(10)))
                             .timeout(Duration.ofSeconds(15));
