@@ -1,15 +1,13 @@
 package co.pragma.usecase.solicitud;
 
 import co.pragma.exception.business.TipoPrestamoNotFoundException;
-import co.pragma.model.cliente.gateways.UsuarioPort;
-import co.pragma.model.cliente.projection.ClienteInfo;
+import co.pragma.model.cliente.Cliente;
+import co.pragma.model.cliente.gateways.ClienteRepository;
 import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
 import co.pragma.model.solicitudprestamo.command.SolicitarPrestamoCommand;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
-import co.pragma.model.solicitudprestamo.gateways.ResultadoSolicitudPublisher;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
 import co.pragma.model.solicitudprestamo.gateways.ValidacionAutomaticaEventPublisher;
-import co.pragma.model.solicitudprestamo.projection.EstadoSolicitudEvent;
 import co.pragma.model.solicitudprestamo.projection.PrestamoInfo;
 import co.pragma.model.solicitudprestamo.projection.SolicitudInfo;
 import co.pragma.model.solicitudprestamo.projection.SolicitudValidacionAutoEvent;
@@ -19,7 +17,7 @@ import co.pragma.usecase.solicitud.businessrules.TipoPrestamoValidator;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
-import java.math.BigDecimal;
+
 import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
@@ -30,7 +28,7 @@ public class SolicitarPrestamoUseCase {
     private final SolicitudPrestamoRepository solicitudPrestamoRepository;
     private final TipoPrestamoRepository tipoPrestamoRepository;
     private final TipoPrestamoValidator tipoPrestamoValidator;
-    private final UsuarioPort usuarioPort;
+    private final ClienteRepository clienteRepository;
     private final ValidacionAutomaticaEventPublisher validacionAutomaticaEventPublisher;
 
     public Mono<SolicitudPrestamo> execute(SolicitarPrestamoCommand cmd) {
@@ -76,7 +74,7 @@ public class SolicitarPrestamoUseCase {
         // TODO: Cambiar a cliente.email() una vez la cuenta de SES salga de sandbox
         String emailCliente = "santiago.velezs@autonoma.edu.co"; /* AWS Sandbox verified email */
 
-        Mono<ClienteInfo> clienteMono = usuarioPort.getClienteById(solicitud.getIdCliente());
+        Mono<Cliente> clienteMono = clienteRepository.findById(solicitud.getIdCliente());
         Mono<TipoPrestamo> tipoMono = tipoPrestamoRepository.findById(String.valueOf(solicitud.getIdTipoPrestamo()));
         Mono<List<PrestamoInfo>> prestamosActivosMono = solicitudPrestamoRepository
                 .findByIdClienteAndIdEstado(solicitud.getIdCliente(), EstadoSolicitudCodigo.APROBADA)
@@ -85,7 +83,7 @@ public class SolicitarPrestamoUseCase {
 
         return Mono.zip(clienteMono, tipoMono, prestamosActivosMono)
                 .flatMap(tuple -> {
-                    ClienteInfo clienteInfo = tuple.getT1();
+                    Cliente cliente = tuple.getT1();
                     TipoPrestamo tipo = tuple.getT2();
                     List<PrestamoInfo> prestamosActivos = tuple.getT3();
 
@@ -100,7 +98,7 @@ public class SolicitarPrestamoUseCase {
 
                     var event = SolicitudValidacionAutoEvent.builder()
                             .solicitud(solicitudInfo)
-                            .cliente(clienteInfo)
+                            .cliente(cliente)
                             .prestamosActivos(prestamosActivos)
                             .build();
 

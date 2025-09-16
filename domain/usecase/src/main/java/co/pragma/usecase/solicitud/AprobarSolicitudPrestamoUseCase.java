@@ -18,7 +18,7 @@ public class AprobarSolicitudPrestamoUseCase {
 
     private final SolicitudPrestamoRepository solicitudPrestamoRepository;
     private final ClienteRepository clienteRepository;
-    private final SolicitudPrestamoEventPublisher solicitudEventPublisher;
+    private final ResultadoSolicitudPublisher resultadoSolicitudPublisher;
 
     public Mono<SolicitudPrestamo> execute(AprobarSolicitudCommand cmd) {
         return solicitudPrestamoRepository.findByCodigo(cmd.codigoSolicitud())
@@ -60,7 +60,7 @@ public class AprobarSolicitudPrestamoUseCase {
                             .tasaInteres(solicitud.getTasaInteres())
                             .build();
 
-                    return solicitudEventPublisher.publish(event)
+                    return resultadoSolicitudPublisher.publish(event)
                             .retryWhen(Retry.backoff(3, Duration.ofSeconds(1))
                                     .maxBackoff(Duration.ofSeconds(10)))
                             .timeout(Duration.ofSeconds(15));

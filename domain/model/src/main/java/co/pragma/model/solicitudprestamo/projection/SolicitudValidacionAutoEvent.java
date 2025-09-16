@@ -1,6 +1,6 @@
 package co.pragma.model.solicitudprestamo.projection;
 
-import co.pragma.model.cliente.projection.ClienteInfo;
+import co.pragma.model.cliente.Cliente;
 import lombok.Builder;
 import lombok.Data;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 @Builder
 public class SolicitudValidacionAutoEvent {
     private SolicitudInfo solicitud;
-    private ClienteInfo cliente;
+    private Cliente cliente;
     private List<PrestamoInfo> prestamosActivos;
 }
 

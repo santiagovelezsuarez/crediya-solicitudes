@@ -7,7 +7,6 @@ import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
 import co.pragma.model.solicitudprestamo.projection.SolicitudPrestamoRevision;
 import co.pragma.model.tipoprestamo.TipoPrestamo;
-import co.pragma.model.tipoprestamo.projection.TipoPrestamoInfo;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;

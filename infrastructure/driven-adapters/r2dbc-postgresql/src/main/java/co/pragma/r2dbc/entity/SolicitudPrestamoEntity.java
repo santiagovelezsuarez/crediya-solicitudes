@@ -25,5 +25,4 @@ public class SolicitudPrestamoEntity {
     private BigDecimal tasaInteres;
     private UUID idTipoPrestamo;
     private Boolean notificado;
-    private BigDecimal tasaInteres;
 }
