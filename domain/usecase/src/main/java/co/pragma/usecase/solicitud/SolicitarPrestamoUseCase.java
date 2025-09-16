@@ -60,6 +60,7 @@ public class SolicitarPrestamoUseCase {
                 .tasaInteres(tipoPrestamo.getTasaInteres())
                 .estado(EstadoSolicitudCodigo.PENDIENTE_REVISION)
                 .codigo(generarCodigo())
+                .tasaInteres(tipoPrestamo.getTasaInteres())
                 .build();
     }
 

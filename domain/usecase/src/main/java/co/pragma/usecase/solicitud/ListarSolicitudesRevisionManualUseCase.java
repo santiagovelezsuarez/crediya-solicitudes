@@ -1,11 +1,12 @@
 package co.pragma.usecase.solicitud;
 
-import co.pragma.model.cliente.projection.ClienteInfo;
-import co.pragma.model.cliente.gateways.UsuarioPort;
+import co.pragma.model.cliente.Cliente;
+import co.pragma.model.cliente.gateways.ClienteRepository;
 import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
 import co.pragma.model.solicitudprestamo.projection.SolicitudPrestamoRevision;
+import co.pragma.model.tipoprestamo.TipoPrestamo;
 import co.pragma.model.tipoprestamo.projection.TipoPrestamoInfo;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class ListarSolicitudesRevisionManualUseCase {
 
     private final SolicitudPrestamoRepository solicitudRepository;
     private final TipoPrestamoRepository tipoPrestamoRepository;
-    private final UsuarioPort usuarioPort;
+    private final ClienteRepository clienteRepository;
 
     private static final List<Integer> ESTADOS_REVISION = List.of(
             EstadoSolicitudCodigo.PENDIENTE_REVISION.getCode(),
@@ -48,39 +49,39 @@ public class ListarSolicitudesRevisionManualUseCase {
                 .distinct()
                 .toList();
 
-        Mono<Map<UUID, ClienteInfo>> clientesMono = usuarioPort.getClientesByIdIn(userIds)
-                .collectMap(ClienteInfo::id, cliente -> cliente);
+        Mono<Map<UUID, Cliente>> clientesMono = clienteRepository.findByIdIn(userIds)
+                .collectMap(Cliente::getId, cliente -> cliente);
 
-        Mono<Map<UUID, TipoPrestamoInfo>> tiposMono = tipoPrestamoRepository.findByIdIn(tipoIds)
-                .collectMap(TipoPrestamoInfo::id, tipo -> tipo);
+        Mono<Map<UUID, TipoPrestamo>> tiposMono = tipoPrestamoRepository.findByIdIn(tipoIds)
+                .collectMap(TipoPrestamo::getId, tipo -> tipo);
 
         return Mono.zip(clientesMono, tiposMono)
                 .map(tuple -> {
-                    Map<UUID, ClienteInfo> clientes = tuple.getT1();
-                    Map<UUID, TipoPrestamoInfo> tipos = tuple.getT2();
+                    Map<UUID, Cliente> clientes = tuple.getT1();
+                    Map<UUID, TipoPrestamo> tipos = tuple.getT2();
 
                     return solicitudes.stream()
                             .map(solicitud -> {
-                                ClienteInfo cliente = clientes.get(solicitud.getIdCliente());
-                                TipoPrestamoInfo tipo = tipos.get(solicitud.getIdTipoPrestamo());
+                                Cliente cliente = clientes.get(solicitud.getIdCliente());
+                                TipoPrestamo tipo = tipos.get(solicitud.getIdTipoPrestamo());
                                 return toView(solicitud, cliente, tipo);
                             })
                             .toList();
                 });
     }
 
-    private SolicitudPrestamoRevision toView(SolicitudPrestamo solicitud, ClienteInfo cliente, TipoPrestamoInfo tipoPrestamoInfo) {
+    private SolicitudPrestamoRevision toView(SolicitudPrestamo solicitud, Cliente cliente, TipoPrestamo tipoPrestamo) {
         return SolicitudPrestamoRevision.builder()
                 .id(solicitud.getId())
                 .monto(solicitud.getMonto())
                 .plazoEnMeses(solicitud.getPlazoEnMeses())
-                .tipoPrestamo(tipoPrestamoInfo.nombre())
+                .tipoPrestamo(tipoPrestamo.getNombre())
                 .estado(EstadoSolicitudCodigo.valueOf(solicitud.getEstado().name()))
-                .tasaInteres(tipoPrestamoInfo.tasaInteres())
-                .emailCliente(cliente.email())
-                .nombreCliente(cliente.nombre())
-                .salarioBase(cliente.salarioBase())
-                .montoMensualSolicitud(solicitud.calcularCuota(tipoPrestamoInfo.tasaInteres()))
+                .tasaInteres(tipoPrestamo.getTasaInteres())
+                .emailCliente(cliente.getEmail())
+                .nombreCliente(cliente.getFullName())
+                .salarioBase(cliente.getSalarioBase())
+                .montoMensualSolicitud(solicitud.calcularCuota(tipoPrestamo.getTasaInteres()))
                 .build();
     }
 }

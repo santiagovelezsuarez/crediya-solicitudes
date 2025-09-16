@@ -20,6 +20,7 @@ public class SolicitudPrestamo {
     private BigDecimal tasaInteres;
     private EstadoSolicitudCodigo estado;
     private Boolean notificado;
+    private BigDecimal tasaInteres;
 
     /**
      * Ref: HU7

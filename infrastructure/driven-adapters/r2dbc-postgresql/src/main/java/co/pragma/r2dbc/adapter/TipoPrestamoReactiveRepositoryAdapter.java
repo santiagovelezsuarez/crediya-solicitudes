@@ -46,10 +46,10 @@ public class TipoPrestamoReactiveRepositoryAdapter extends ReactiveAdapterOperat
     }
 
     @Override
-    public Flux<TipoPrestamoInfo> findByIdIn(List<UUID> ids) {
+    public Flux<TipoPrestamo> findByIdIn(List<UUID> ids) {
         log.debug("Buscando tipo de préstamo por Ids");
         return repository.findByIdIn(ids)
-                .map(entity -> mapper.map(entity, TipoPrestamoInfo.class))
+                .map(entity -> mapper.map(entity, TipoPrestamo.class))
                 .onErrorMap(ex -> new InfrastructureException(ErrorCode.DB_ERROR.name(), ex));
     }
 }

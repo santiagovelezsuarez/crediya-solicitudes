@@ -6,7 +6,7 @@ import co.pragma.api.handler.SolicitudPrestamoHandler;
 import co.pragma.api.RouterRest;
 import co.pragma.api.mapper.SolicitudPrestamoDtoMapper;
 import co.pragma.api.security.JwtService;
-import co.pragma.model.cliente.gateways.UsuarioPort;
+import co.pragma.model.cliente.gateways.ClienteRepository;
 import co.pragma.model.session.PermissionValidator;
 import co.pragma.model.session.gateways.SessionProvider;
 import co.pragma.model.estadosolicitud.gateways.EstadoSolicitudRepository;
@@ -69,7 +69,7 @@ class ConfigTest {
     private DtoValidator dtoValidator;
 
     @MockitoBean
-    private UsuarioPort usuarioPort;
+    private ClienteRepository clienteRepository;
 
     @MockitoBean
     private JwtService jwtService;
