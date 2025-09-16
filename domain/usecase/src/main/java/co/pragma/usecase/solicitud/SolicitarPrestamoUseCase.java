@@ -34,6 +34,7 @@ public class SolicitarPrestamoUseCase {
                 .plazoEnMeses(cmd.plazoEnMeses())
                 .estado(EstadoSolicitudCodigo.PENDIENTE_REVISION)
                 .codigo(generarCodigo())
+                .tasaInteres(tipoPrestamo.getTasaInteres())
                 .build();
     }
 

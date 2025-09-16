@@ -21,9 +21,10 @@ public class SQSSolicitudEventPublisher implements SolicitudPrestamoEventPublish
     private final ObjectMapper objectMapper;
 
     public Mono<String> send(String message) {
+        log.info("Sending Solicitud Prestamo event: {}", message);
         return Mono.fromCallable(() -> buildRequest(message))
                 .flatMap(request -> Mono.fromFuture(sqsAsyncClient.sendMessage(request)))
-                .doOnNext(response -> log.debug("Message sent {}", response.messageId()))
+                .doOnNext(response -> log.info("Message sent {}", response.messageId()))
                 .map(SendMessageResponse::messageId);
     }
 

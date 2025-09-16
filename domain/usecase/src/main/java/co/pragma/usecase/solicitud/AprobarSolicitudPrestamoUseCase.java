@@ -2,7 +2,7 @@ package co.pragma.usecase.solicitud;
 
 import co.pragma.exception.business.SolicitudAlreadyProcessedException;
 import co.pragma.exception.business.SolicitudPrestamoNotFound;
-import co.pragma.model.cliente.gateways.UsuarioPort;
+import co.pragma.model.cliente.gateways.ClienteRepository;
 import co.pragma.model.solicitudprestamo.command.AprobarSolicitudCommand;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoEventPublisher;
@@ -17,7 +17,7 @@ import java.time.Duration;
 public class AprobarSolicitudPrestamoUseCase {
 
     private final SolicitudPrestamoRepository solicitudPrestamoRepository;
-    private final UsuarioPort usuarioPort;
+    private final ClienteRepository clienteRepository;
     private final SolicitudPrestamoEventPublisher solicitudEventPublisher;
 
     public Mono<SolicitudPrestamo> execute(AprobarSolicitudCommand cmd) {
@@ -47,16 +47,17 @@ public class AprobarSolicitudPrestamoUseCase {
     private Mono<Void> publicarEvento(SolicitudPrestamo solicitud) {
         // TODO: Cambiar a cliente.email() una vez la cuenta de SES salga de sandbox
         String emailCliente = "santiago.velezs@autonoma.edu.co"; /* AWS Sandbox verified email */
-        return usuarioPort.getClienteById(solicitud.getIdCliente())
+        return clienteRepository.findById(solicitud.getIdCliente())
                 .flatMap(cliente -> {
                     var event = EstadoSolicitudEvent.builder()
                             .codigoSolicitud(solicitud.getCodigo())
                             /* Ambiente Desarrollo con email verificado en AWS */
                             //.emailCliente(cliente.email())
                             .emailCliente(emailCliente)
-                            .nombreCliente(cliente.nombre())
+                            .nombreCliente(cliente.getFullName())
                             .monto(solicitud.getMonto())
                             .estado(solicitud.getEstado().name())
+                            .tasaInteres(solicitud.getTasaInteres())
                             .build();
 
                     return solicitudEventPublisher.publishEstadoActualizado(event)

@@ -22,6 +22,7 @@ public class SolicitudPrestamoEntityMapper {
                         ? EstadoSolicitudCodigo.fromCode(entity.getIdEstado())
                         : null)
                 .notificado(entity.getNotificado())
+                .tasaInteres(entity.getTasaInteres())
                 .build();
     }
 
@@ -35,6 +36,7 @@ public class SolicitudPrestamoEntityMapper {
                 .plazoEnMeses(model.getPlazoEnMeses())
                 .idTipoPrestamo(model.getIdTipoPrestamo())
                 .notificado(model.getNotificado())
+                .tasaInteres(model.getTasaInteres())
                 .build();
     }
 }
