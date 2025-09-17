@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class SolicitudValidacionAutoEvent {
+public class SolicitudEvaluacionAutoEvent {
     private SolicitudInfo solicitud;
     private Cliente cliente;
     private List<PrestamoInfo> prestamosActivos;

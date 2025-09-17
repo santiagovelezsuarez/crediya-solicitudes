@@ -11,5 +11,6 @@ public record EstadoSolicitudEvent(
         String nombreCliente,
         BigDecimal monto,
         String estado,
-        BigDecimal tasaInteres
+        BigDecimal tasaInteres,
+        Integer plazoEnMeses
 ) {}

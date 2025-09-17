@@ -7,5 +7,5 @@ import java.math.BigDecimal;
 public record PrestamoInfo(
     BigDecimal monto,
     Integer plazoEnMeses,
-    BigDecimal tasaInteres
+    BigDecimal tasaInteresAnual
 ) {}

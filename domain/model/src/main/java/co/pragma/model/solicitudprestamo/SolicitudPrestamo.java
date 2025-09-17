@@ -51,6 +51,7 @@ public class SolicitudPrestamo {
 
     public boolean esProcesable() {
         return estado == EstadoSolicitudCodigo.PENDIENTE_REVISION ||
+               estado == EstadoSolicitudCodigo.PENDIENTE_VALIDACION_AUTOMATICA ||
                estado == EstadoSolicitudCodigo.REVISION_MANUAL;
     }
 }

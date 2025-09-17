@@ -1,7 +1,5 @@
 package co.pragma.r2dbc.repository;
 
-import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
-import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.r2dbc.entity.SolicitudPrestamoEntity;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;

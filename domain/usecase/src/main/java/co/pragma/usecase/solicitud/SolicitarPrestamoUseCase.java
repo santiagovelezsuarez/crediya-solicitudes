@@ -10,7 +10,7 @@ import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
 import co.pragma.model.solicitudprestamo.gateways.ValidacionAutomaticaEventPublisher;
 import co.pragma.model.solicitudprestamo.projection.PrestamoInfo;
 import co.pragma.model.solicitudprestamo.projection.SolicitudInfo;
-import co.pragma.model.solicitudprestamo.projection.SolicitudValidacionAutoEvent;
+import co.pragma.model.solicitudprestamo.projection.SolicitudEvaluacionAutoEvent;
 import co.pragma.model.tipoprestamo.TipoPrestamo;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
 import co.pragma.usecase.solicitud.businessrules.TipoPrestamoValidator;
@@ -96,7 +96,7 @@ public class SolicitarPrestamoUseCase {
                             .tasaInteresAnual(tipo.getTasaInteres())
                             .build();
 
-                    var event = SolicitudValidacionAutoEvent.builder()
+                    var event = SolicitudEvaluacionAutoEvent.builder()
                             .solicitud(solicitudInfo)
                             .cliente(cliente)
                             .prestamosActivos(prestamosActivos)
@@ -113,7 +113,7 @@ public class SolicitarPrestamoUseCase {
         return PrestamoInfo.builder()
                 .monto(solicitud.getMonto())
                 .plazoEnMeses(solicitud.getPlazoEnMeses())
-                .tasaInteres(solicitud.getTasaInteres())
+                .tasaInteresAnual(solicitud.getTasaInteres())
                 .build();
     }
 }

@@ -1,7 +1,7 @@
 package co.pragma.sqs.sender;
 
 import co.pragma.model.solicitudprestamo.gateways.ValidacionAutomaticaEventPublisher;
-import co.pragma.model.solicitudprestamo.projection.SolicitudValidacionAutoEvent;
+import co.pragma.model.solicitudprestamo.projection.SolicitudEvaluacionAutoEvent;
 import co.pragma.sqs.sender.config.SqsQueuesProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,7 @@ public class SQSValidacionSolicitudEventPublisher implements ValidacionAutomatic
     }
 
     @Override
-    public Mono<Void> publish(SolicitudValidacionAutoEvent event) {
+    public Mono<Void> publish(SolicitudEvaluacionAutoEvent event) {
         return Mono.fromCallable(() -> objectMapper.writeValueAsString(event))
                 .flatMap(json -> send("validacionauto", json))
                 .then();

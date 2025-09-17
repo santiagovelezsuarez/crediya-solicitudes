@@ -4,7 +4,7 @@ import co.pragma.model.cliente.Cliente;
 import co.pragma.model.cliente.gateways.ClienteRepository;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
-import co.pragma.model.tipoprestamo.projection.TipoPrestamoInfo;
+import co.pragma.model.tipoprestamo.TipoPrestamo;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ class ListarSolicitudesRevisionManualUseCaseTest {
     private ListarSolicitudesRevisionManualUseCase useCase;
 
     private List<SolicitudPrestamo> solicitudes;
-    private List<TipoPrestamoInfo> tipos;
+    private List<TipoPrestamo> tipos;
     private List<Cliente> clientes;
 
     @BeforeEach
@@ -56,7 +56,7 @@ class ListarSolicitudesRevisionManualUseCaseTest {
                 .toList();
 
         tipos = solicitudes.stream()
-                .map(s -> TipoPrestamoInfo.builder().id(s.getIdTipoPrestamo()).nombre("Personal").tasaInteres(new BigDecimal("0.10")).build())
+                .map(s -> TipoPrestamo.builder().id(s.getIdTipoPrestamo()).nombre("Personal").tasaInteres(new BigDecimal("0.10")).build())
                 .toList();
 
         clientes = solicitudes.stream()
