@@ -2,6 +2,7 @@ package co.pragma.r2dbc.adapter;
 
 import co.pragma.exception.ErrorCode;
 import co.pragma.exception.InfrastructureException;
+import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
 import co.pragma.r2dbc.mapper.SolicitudPrestamoEntityMapper;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Repository
@@ -50,6 +52,14 @@ public class SolicitudPrestamoReactiveRepositoryAdapter implements SolicitudPres
     public Mono<Void> markAsNotificado(String codigo, Boolean notificado) {
         log.info("Marcando solicitud {} como notificada en {}", codigo, notificado);
         return solicitudRepository.markAsNotificado(codigo, notificado);
+    }
+
+    @Override
+    public Flux<SolicitudPrestamo> findByIdClienteAndIdEstado(UUID idCliente, EstadoSolicitudCodigo estadoSolicitudCodigo) {
+        log.info("Buscando solicitudes de prestamo {} para el cliente {}", estadoSolicitudCodigo.name(), idCliente);
+        return solicitudRepository.findByIdClienteAndIdEstado(idCliente, estadoSolicitudCodigo.getCode())
+                .map(mapper::toDomain)
+                .onErrorMap(ex -> new InfrastructureException(ErrorCode.DB_ERROR.name(), ex.getCause()));
     }
 
 }

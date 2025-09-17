@@ -1,10 +1,10 @@
 package co.pragma.usecase.solicitud;
 
-import co.pragma.model.cliente.projection.ClienteInfo;
-import co.pragma.model.cliente.gateways.UsuarioPort;
+import co.pragma.model.cliente.Cliente;
+import co.pragma.model.cliente.gateways.ClienteRepository;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
-import co.pragma.model.tipoprestamo.projection.TipoPrestamoInfo;
+import co.pragma.model.tipoprestamo.TipoPrestamo;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,14 +33,14 @@ class ListarSolicitudesRevisionManualUseCaseTest {
     private TipoPrestamoRepository tipoPrestamoRepository;
 
     @Mock
-    private UsuarioPort usuarioPort;
+    private ClienteRepository clienteRepository;
 
     @InjectMocks
     private ListarSolicitudesRevisionManualUseCase useCase;
 
     private List<SolicitudPrestamo> solicitudes;
-    private List<TipoPrestamoInfo> tipos;
-    private List<ClienteInfo> clientes;
+    private List<TipoPrestamo> tipos;
+    private List<Cliente> clientes;
 
     @BeforeEach
     void setUp() {
@@ -56,18 +56,18 @@ class ListarSolicitudesRevisionManualUseCaseTest {
                 .toList();
 
         tipos = solicitudes.stream()
-                .map(s -> TipoPrestamoInfo.builder().id(s.getIdTipoPrestamo()).nombre("Personal").tasaInteres(new BigDecimal("0.10")).build())
+                .map(s -> TipoPrestamo.builder().id(s.getIdTipoPrestamo()).nombre("Personal").tasaInteres(new BigDecimal("0.10")).build())
                 .toList();
 
         clientes = solicitudes.stream()
-                .map(s -> new ClienteInfo(s.getIdCliente(), "test" + s.getId() + "@mail.com", "Test User", new BigDecimal("5000"), new BigDecimal("100")))
+                .map(s -> new Cliente(s.getIdCliente(), "test" + s.getId() + "@mail.com", "Test", "User", new BigDecimal("100")))
                 .toList();
     }
 
     @Test
     void shouldReturnResolvedListWhenDataIsAvailable() {
         when(solicitudPrestamoRepository.findByIdEstadoIn(any(), anyInt(), anyInt())).thenReturn(Flux.fromIterable(solicitudes));
-        when(usuarioPort.getClientesByIdIn(any())).thenReturn(Flux.fromIterable(clientes));
+        when(clienteRepository.findByIdIn(any())).thenReturn(Flux.fromIterable(clientes));
         when(tipoPrestamoRepository.findByIdIn(any())).thenReturn(Flux.fromIterable(tipos));
 
         StepVerifier.create(useCase.execute(0, 10))
@@ -77,7 +77,7 @@ class ListarSolicitudesRevisionManualUseCaseTest {
                 .verifyComplete();
 
         verify(solicitudPrestamoRepository).findByIdEstadoIn(any(), eq(0), eq(10));
-        verify(usuarioPort).getClientesByIdIn(any());
+        verify(clienteRepository).findByIdIn(any());
         verify(tipoPrestamoRepository).findByIdIn(any());
     }
 
@@ -90,7 +90,7 @@ class ListarSolicitudesRevisionManualUseCaseTest {
                 .verifyComplete();
 
         verify(solicitudPrestamoRepository).findByIdEstadoIn(any(), eq(0), eq(10));
-        verifyNoInteractions(usuarioPort);
+        verifyNoInteractions(clienteRepository);
         verifyNoInteractions(tipoPrestamoRepository);
     }
 }

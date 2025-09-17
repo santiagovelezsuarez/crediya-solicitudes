@@ -57,5 +57,15 @@ resilience4j:
         waitDurationInOpenState: "10s"
 adapter:
   sqs:
-    region: ${AWS_REGION:us-east-2}
-    queueUrl: ${AWS_QUEUE:https://sqs.us-east-2.amazonaws.com/488340573632/queueCrediyaEstadoSolicitudes}
+    region: "${AWS_REGION:us-east-2}"
+    queues:
+      validacionauto: "${AWS_AUTO_VALIDATION_QUEUE:https://sqs.us-east-2.amazonaws.com/488340573632/queueCrediyaValidacionAuto}"
+      resultadoasesor: "${AWS_ASESOR_RESULT_QUEUE:https://sqs.us-east-2.amazonaws.com/488340573632/queueCrediyaEstadoSolicitudes}"
+entrypoint:
+  sqs:
+    region: "us-east-2"
+    queueUrl: "https://sqs.us-east-2.amazonaws.com/488340573632/queueCrediyaResultadoValidacionAuto"
+    waitTimeSeconds: 20
+    maxNumberOfMessages: 10
+    visibilityTimeoutSeconds: 10
+    numberOfThreads: 1

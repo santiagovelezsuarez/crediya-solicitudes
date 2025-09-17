@@ -1,10 +1,10 @@
 apply plugin: 'org.springframework.boot'
 
 dependencies {
+	implementation project(':sqs-listener')
 	implementation project(':sqs-sender')
 	implementation project(':metrics')
 	implementation project(':proxy')
-	implementation project(':rest-consumer')
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation project(':reactive-web')
 	implementation 'org.reactivecommons.utils:object-mapper:0.1.0'

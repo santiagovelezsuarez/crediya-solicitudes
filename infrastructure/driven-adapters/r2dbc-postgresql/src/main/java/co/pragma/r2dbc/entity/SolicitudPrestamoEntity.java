@@ -22,6 +22,7 @@ public class SolicitudPrestamoEntity {
     private Integer idEstado;
     private BigDecimal monto;
     private Integer plazoEnMeses;
+    private BigDecimal tasaInteres;
     private UUID idTipoPrestamo;
     private Boolean notificado;
 }

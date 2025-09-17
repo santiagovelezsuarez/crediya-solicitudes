@@ -3,7 +3,6 @@ package co.pragma.r2dbc;
 import co.pragma.exception.ErrorCode;
 import co.pragma.exception.InfrastructureException;
 import co.pragma.model.tipoprestamo.TipoPrestamo;
-import co.pragma.model.tipoprestamo.projection.TipoPrestamoInfo;
 import co.pragma.r2dbc.adapter.TipoPrestamoReactiveRepositoryAdapter;
 import co.pragma.r2dbc.entity.TipoPrestamoEntity;
 import co.pragma.r2dbc.repository.TipoPrestamoReactiveRepository;
@@ -38,7 +37,7 @@ class TipoPrestamoRepositoryAdapterTest {
 
     private TipoPrestamoEntity entity;
     private TipoPrestamo model;
-    private TipoPrestamoInfo info;
+    private TipoPrestamo info;
     private UUID uuid;
 
     @BeforeEach
@@ -92,7 +91,7 @@ class TipoPrestamoRepositoryAdapterTest {
         mockFindByIdIn();
 
         StepVerifier.create(repositoryAdapter.findByIdIn(List.of(uuid)))
-                .expectNextMatches(tipoPrestamoInfo -> tipoPrestamoInfo.id().equals(uuid))
+                .expectNextMatches(tipoPrestamoInfo -> tipoPrestamoInfo.getId().equals(uuid))
                 .verifyComplete();
     }
 
@@ -135,8 +134,8 @@ class TipoPrestamoRepositoryAdapterTest {
                 .build();
     }
 
-    private TipoPrestamoInfo createInfo() {
-        return TipoPrestamoInfo.builder()
+    private TipoPrestamo createInfo() {
+        return TipoPrestamo.builder()
                 .id(entity.getId())
                 .nombre(entity.getNombre())
                 .build();
@@ -159,7 +158,7 @@ class TipoPrestamoRepositoryAdapterTest {
 
     private void mockFindByIdIn() {
         when(reactiveRepository.findByIdIn(anyList())).thenReturn(Flux.just(entity));
-        when(mapper.map(entity, TipoPrestamoInfo.class)).thenReturn(info);
+        when(mapper.map(entity, TipoPrestamo.class)).thenReturn(info);
     }
 
     private boolean isInfrastructureException(Throwable throwable) {

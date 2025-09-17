@@ -3,7 +3,6 @@ package co.pragma.r2dbc.adapter;
 import co.pragma.exception.ErrorCode;
 import co.pragma.exception.InfrastructureException;
 import co.pragma.model.tipoprestamo.TipoPrestamo;
-import co.pragma.model.tipoprestamo.projection.TipoPrestamoInfo;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
 import co.pragma.r2dbc.entity.TipoPrestamoEntity;
 import co.pragma.r2dbc.helper.ReactiveAdapterOperations;
@@ -46,10 +45,10 @@ public class TipoPrestamoReactiveRepositoryAdapter extends ReactiveAdapterOperat
     }
 
     @Override
-    public Flux<TipoPrestamoInfo> findByIdIn(List<UUID> ids) {
+    public Flux<TipoPrestamo> findByIdIn(List<UUID> ids) {
         log.debug("Buscando tipo de préstamo por Ids");
         return repository.findByIdIn(ids)
-                .map(entity -> mapper.map(entity, TipoPrestamoInfo.class))
+                .map(entity -> mapper.map(entity, TipoPrestamo.class))
                 .onErrorMap(ex -> new InfrastructureException(ErrorCode.DB_ERROR.name(), ex));
     }
 }

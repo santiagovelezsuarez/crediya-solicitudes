@@ -17,6 +17,7 @@ public class SolicitudPrestamoDtoMapper {
                 .id(String.valueOf(solicitud.getId()))
                 .monto(solicitud.getMonto())
                 .plazoEnMeses(solicitud.getPlazoEnMeses())
+                .tasaInteres(solicitud.getTasaInteres())
                 .tipoPrestamo(solicitud.getIdTipoPrestamo() != null ? solicitud.getIdTipoPrestamo().toString() : null)
                 .estado(solicitud.getEstado() != null ? solicitud.getEstado().name() : null)
                 .build();
