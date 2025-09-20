@@ -1,9 +1,8 @@
-package co.pragma.r2dbc;
+package co.pragma.r2dbc.adapter;
 
 import co.pragma.exception.ErrorCode;
 import co.pragma.exception.InfrastructureException;
 import co.pragma.model.tipoprestamo.TipoPrestamo;
-import co.pragma.r2dbc.adapter.TipoPrestamoReactiveRepositoryAdapter;
 import co.pragma.r2dbc.entity.TipoPrestamoEntity;
 import co.pragma.r2dbc.repository.TipoPrestamoReactiveRepository;
 import org.junit.jupiter.api.BeforeEach;

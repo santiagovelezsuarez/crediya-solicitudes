@@ -4,6 +4,7 @@ import co.pragma.exception.business.TipoPrestamoNotFoundException;
 import co.pragma.model.solicitudprestamo.command.SolicitarPrestamoCommand;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
+import co.pragma.model.solicitudprestamo.gateways.ValidacionAutomaticaEventPublisher;
 import co.pragma.model.tipoprestamo.TipoPrestamo;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
 import co.pragma.usecase.solicitud.businessrules.TipoPrestamoValidator;
@@ -31,11 +32,16 @@ class SolicitarPrestamoUseCaseTest {
     @Mock
     private TipoPrestamoValidator tipoPrestamoValidator;
 
+    @Mock
+    private ValidacionAutomaticaEventPublisher validacionAutomaticaEventPublisher;
+
     @InjectMocks
     private SolicitarPrestamoUseCase useCase;
 
     private SolicitarPrestamoCommand cmd;
     private TipoPrestamo tipoPrestamo;
+    private TipoPrestamo tipoPrestamoManual;
+    private TipoPrestamo tipoPrestamoAutomatico;
     private SolicitudPrestamo solicitudPrestamo;
 
     @BeforeEach
@@ -50,6 +56,14 @@ class SolicitarPrestamoUseCaseTest {
         tipoPrestamo = TipoPrestamo.builder()
                 .id(UUID.randomUUID())
                 .nombre("HIPOTECARIO")
+                .validacionAutomatica(false)
+                .build();
+
+        tipoPrestamoAutomatico = TipoPrestamo.builder()
+                .id(UUID.randomUUID())
+                .nombre("AUTOMATICA")
+                .validacionAutomatica(true)
+                .tasaInteres(new BigDecimal("0.08"))
                 .build();
 
         solicitudPrestamo = SolicitudPrestamo.builder()
@@ -57,6 +71,13 @@ class SolicitarPrestamoUseCaseTest {
                 .monto(cmd.monto())
                 .plazoEnMeses(cmd.plazoEnMeses())
                 .idTipoPrestamo(tipoPrestamo.getId())
+                .build();
+
+        tipoPrestamoManual = TipoPrestamo.builder()
+                .id(UUID.randomUUID())
+                .nombre("MANUAL")
+                .validacionAutomatica(false)
+                .tasaInteres(new BigDecimal("0.10"))
                 .build();
     }
 
@@ -87,5 +108,18 @@ class SolicitarPrestamoUseCaseTest {
         verify(tipoPrestamoRepository).findByNombre(cmd.tipoPrestamo());
         verifyNoInteractions(tipoPrestamoValidator);
         verifyNoInteractions(solicitudPrestamoRepository);
+    }
+
+    @Test
+    void shouldReturnErrorWhenValidatorFails() {
+        when(tipoPrestamoRepository.findByNombre(anyString())).thenReturn(Mono.just(tipoPrestamoManual));
+        when(tipoPrestamoValidator.validate(any())).thenReturn(Mono.error(new IllegalArgumentException("Validation failed")));
+
+        StepVerifier.create(useCase.execute(cmd))
+                .expectError(IllegalArgumentException.class)
+                .verify();
+
+        verify(solicitudPrestamoRepository, never()).save(any(SolicitudPrestamo.class));
+        verifyNoInteractions(validacionAutomaticaEventPublisher);
     }
 }

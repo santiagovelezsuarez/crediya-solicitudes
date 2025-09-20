@@ -4,6 +4,7 @@ import co.pragma.model.cliente.gateways.ClienteRepository;
 import co.pragma.model.estadosolicitud.gateways.EstadoSolicitudRepository;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
+import co.pragma.usecase.solicitud.ActualizarEstadoSolicitudUseCase;
 import co.pragma.usecase.solicitud.AprobarSolicitudPrestamoUseCase;
 import co.pragma.usecase.solicitud.ListarSolicitudesRevisionManualUseCase;
 import co.pragma.usecase.solicitud.SolicitarPrestamoUseCase;
@@ -60,7 +61,7 @@ class UseCasesConfigTest {
         }
 
         @Bean
-        public SolicitarPrestamoUseCase solicitudPrestamoUseCase() {
+        public SolicitarPrestamoUseCase solicitarPrestamoUseCase() {
             return Mockito.mock(SolicitarPrestamoUseCase.class);
         }
 
@@ -78,6 +79,10 @@ class UseCasesConfigTest {
         public TipoPrestamoValidator tipoPrestamoValidator() {
             return Mockito.mock(TipoPrestamoValidator.class);
         }
-    }
 
+        @Bean
+        public ActualizarEstadoSolicitudUseCase actualizarEstadoSolicitudUseCase() {
+            return  Mockito.mock(ActualizarEstadoSolicitudUseCase.class);
+        }
+    }
 }

@@ -48,6 +48,7 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
     protected Mono<ServerResponse> buildErrorResponse(ServerRequest request) {
         return Mono.error(getError(request))
                 .onErrorResume(BusinessException.class, ex -> handleBusinessException(ex, request))
+                .onErrorResume(SecurityException.class, ex -> handleSecurityException(request))
                 .onErrorResume(InfrastructureException.class, ex -> handleInfrastructureException(request))
                 .onErrorResume(DtoValidationException.class, ex -> handleValidationException(ex, request))
                 .onErrorResume(ServerWebInputException.class, ex -> handleWebInputException(request))
@@ -57,6 +58,11 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
     private Mono<ServerResponse> handleBusinessException(BusinessException ex, ServerRequest request) {
         HttpStatus status = errorCodeHttpMapper.toHttpStatus(ex.getCode());
         return buildResponse(ErrorContext.of(request, status, ex.getCode(), ex.getMessage()));
+    }
+
+    private Mono<ServerResponse> handleSecurityException (ServerRequest request) {
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        return buildResponse(ErrorContext.of(request, status, ErrorCode.FORBIDDEN));
     }
 
     private Mono<ServerResponse> handleInfrastructureException(ServerRequest request) {

@@ -21,9 +21,8 @@ public class ActualizarEstadoSolicitudUseCase {
     private final ResultadoSolicitudPublisher resultadoSolicitudPublisher;
 
     public Mono<SolicitudPrestamo> execute(DecisionSolicitudPrestamo evento) {
-        //{"codigo":"SP-20250917-A4E0F722","decisionFinal":"REVISION_MANUAL"}
+
         return solicitudPrestamoRepository.findByCodigo(evento.getCodigoSolicitud())
-                .doOnSubscribe(sub -> System.out.println("Buscando solicitud con código: " + evento.getCodigoSolicitud()))
                 .switchIfEmpty(Mono.error(new SolicitudPrestamoNotFound()))
                 .flatMap(solicitud -> procesarActualizacion(solicitud, evento))
                 .flatMap(solicitudPrestamoRepository::save)

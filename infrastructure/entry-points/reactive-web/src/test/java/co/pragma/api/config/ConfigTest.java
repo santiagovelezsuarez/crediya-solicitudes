@@ -5,14 +5,14 @@ import co.pragma.api.dto.DtoValidator;
 import co.pragma.api.handler.SolicitudPrestamoHandler;
 import co.pragma.api.RouterRest;
 import co.pragma.api.mapper.SolicitudPrestamoDtoMapper;
-import co.pragma.api.security.JwtService;
+import co.pragma.api.security.SecurityHandlerFilter;
+import co.pragma.api.security.UserContextExtractor;
 import co.pragma.model.cliente.gateways.ClienteRepository;
-import co.pragma.model.session.PermissionValidator;
-import co.pragma.model.session.gateways.SessionProvider;
 import co.pragma.model.estadosolicitud.gateways.EstadoSolicitudRepository;
 import co.pragma.model.solicitudprestamo.gateways.ResultadoSolicitudPublisher;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
+import co.pragma.usecase.security.PermissionValidator;
 import co.pragma.usecase.solicitud.AprobarSolicitudPrestamoUseCase;
 import co.pragma.usecase.solicitud.ListarSolicitudesRevisionManualUseCase;
 import co.pragma.usecase.solicitud.SolicitarPrestamoUseCase;
@@ -26,7 +26,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 @ContextConfiguration(classes = {RouterRest.class, SolicitudPrestamoHandler.class})
 @WebFluxTest
-@Import({SecurityConfig.class, CorsConfig.class, SecurityHeadersConfig.class})
+@Import({SecurityConfig.class, CorsConfig.class, SecurityHeadersConfig.class, SecurityHandlerFilter.class})
 class ConfigTest {
 
     @Autowired
@@ -37,12 +37,6 @@ class ConfigTest {
 
     @MockitoBean
     private ResponseService responseService;
-
-    @MockitoBean
-    private PermissionValidator permissionValidator;
-
-    @MockitoBean
-    private SessionProvider sessionProvider;
 
     @MockitoBean
     private ListarSolicitudesRevisionManualUseCase listarSolicitudesRevisionManualUseCase;
@@ -72,7 +66,10 @@ class ConfigTest {
     private ClienteRepository clienteRepository;
 
     @MockitoBean
-    private JwtService jwtService;
+    private PermissionValidator permissionValidator;
+
+    @MockitoBean
+    private UserContextExtractor userContextExtractor;
 
     @Test
     void corsConfigurationShouldAllowOrigins() {
@@ -88,5 +85,4 @@ class ConfigTest {
                 .expectHeader().valueEquals("Pragma", "no-cache")
                 .expectHeader().valueEquals("Referrer-Policy", "strict-origin-when-cross-origin");
     }
-
 }

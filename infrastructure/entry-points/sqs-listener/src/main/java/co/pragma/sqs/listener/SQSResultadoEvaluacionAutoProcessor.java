@@ -24,7 +24,7 @@ public class SQSResultadoEvaluacionAutoProcessor implements Function<Message, Mo
         return Mono.fromCallable(() -> objectMapper.readValue(message.body(), DecisionSolicitudPrestamo.class))
                 .doOnNext(resultado -> log.trace("Procesando resultado para solicitud {}", resultado.getCodigoSolicitud()))
                 .flatMap(actualizarEstadoSolicitudUseCase::execute)
-                .doOnSuccess(v -> log.info("Actualización de estado completada"))
+                .doOnSuccess(v -> log.debug("Actualización de estado completada"))
                 .doOnError(e -> log.error("Error procesando mensaje SQS: {}", message.body(), e))
                 .then();
     }

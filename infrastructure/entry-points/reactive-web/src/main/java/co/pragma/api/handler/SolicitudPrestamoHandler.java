@@ -5,9 +5,9 @@ import co.pragma.api.dto.DtoValidator;
 import co.pragma.api.dto.request.AprobarSolicitudDTO;
 import co.pragma.api.dto.request.SolicitarPrestamoDTO;
 import co.pragma.api.mapper.SolicitudPrestamoDtoMapper;
-import co.pragma.model.session.Permission;
-import co.pragma.model.session.PermissionValidator;
-import co.pragma.model.session.gateways.SessionProvider;
+import co.pragma.api.security.UserContextSupport;
+import co.pragma.model.solicitudprestamo.command.SolicitarPrestamoCommand;
+import co.pragma.security.UserContextRequest;
 import co.pragma.usecase.solicitud.AprobarSolicitudPrestamoUseCase;
 import co.pragma.usecase.solicitud.ListarSolicitudesRevisionManualUseCase;
 import co.pragma.usecase.solicitud.SolicitarPrestamoUseCase;
@@ -30,20 +30,17 @@ public class SolicitudPrestamoHandler {
     private final DtoValidator dtoValidator;
 
     private final ResponseService responseService;
-    private final PermissionValidator permissionValidator;
-    private final SessionProvider sessionProvider;
 
     public Mono<ServerResponse> listenRegistrarSolicitud(ServerRequest serverRequest) {
         log.debug("Petición recibida para registrar solicitud de prestamo");
         return serverRequest
                 .bodyToMono(SolicitarPrestamoDTO.class)
                 .flatMap(dtoValidator::validate)
-                .flatMap(dto -> permissionValidator
-                        .requirePermission(Permission.SOLICITAR_PRESTAMO)
-                        .then(sessionProvider.getCurrentSession())
-                        .map(session -> mapper.toCommand(dto, session.getUserId()))
-                )
-                .flatMap(solicitarPrestamoUseCase::execute)
+                .flatMap(dto -> Mono.deferContextual(ctx -> {
+                    String userId = ctx.get("userId");
+                    SolicitarPrestamoCommand command = mapper.toCommand(dto, userId);
+                    return solicitarPrestamoUseCase.execute(command);
+                }))
                 .doOnNext(s -> log.trace("Solicitud de préstamo registrada con éxito: {}", s.getId()))
                 .map(mapper::toResponse)
                 .flatMap(responseService::createdJson);
@@ -55,8 +52,7 @@ public class SolicitudPrestamoHandler {
         int page = serverRequest.queryParam("page").map(Integer::parseInt).orElse(0);
         int size = serverRequest.queryParam("size").map(Integer::parseInt).orElse(10);
 
-        return permissionValidator.requirePermission(Permission.LISTAR_SOLICITUDES_PENDIENTES)
-                .then(listarSolicitudesRevisionManualUseCase.execute(page, size))
+        return listarSolicitudesRevisionManualUseCase.execute(page, size)
                 .doOnNext(s -> log.trace("Solicitud listada: {}", s))
                 .flatMap(responseService::okJson);
     }
@@ -66,11 +62,7 @@ public class SolicitudPrestamoHandler {
         return serverRequest
                 .bodyToMono(AprobarSolicitudDTO.class)
                 .flatMap(dtoValidator::validate)
-                .flatMap(dto -> permissionValidator
-                        .requirePermission(Permission.APROBAR_SOLICITUD)
-                        .then(sessionProvider.getCurrentSession())
-                        .map(session -> SolicitudPrestamoDtoMapper.toAprobarCommand(dto))
-                )
+                .map(SolicitudPrestamoDtoMapper::toAprobarCommand)
                 .flatMap(aprobarSolicitudPrestamoUseCase::execute)
                 .doOnNext(solicitud -> log.info("Solicitud {} actualizada", solicitud.getCodigo()))
                 .map(mapper::toResponse)
