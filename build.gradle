@@ -25,7 +25,21 @@ sonar {
         property "sonar.sourceEncoding", "UTF-8"
         property "sonar.modules", "${modules.join(',')}"
         property "sonar.sources", "src,deployment,settings.gradle,main.gradle,build.gradle,${modules.collect { "${it}/build.gradle" }.join(',')}"
-        property "sonar.exclusions","**/MainApplication.java"
+        property "sonar.exclusions",
+                "**/MainApplication.java," +
+                        "**/*Application.java," +
+                        "**/*Config.java," +
+                        "**/config/**," +
+                        "**/dto/**," +
+                        "**/*DTO.java," +
+                        "**/exception/**," +
+                        "**/exception/**/**," +
+                        "**/mapper/**," +
+                        "**/helper/**," +
+                        "**/gateways/**," +
+                        "**/*Enum.java," +
+                        "*Request.java," +
+                        "**/*Response.java"
         property "sonar.tests", "src/test"
         property "sonar.java.binaries", "**/build/classes/java/main"
         property "sonar.junit.reportsPath", "**/build/test-results/test"
@@ -33,6 +47,22 @@ sonar {
         property "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacocoMergedReport/jacocoMergedReport.xml"
         property "sonar.pitest.reportPaths", "build/reports/pitest/mutations.xml"
     }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'info.solidsoft.pitest'
+
+    pitest {
+        targetClasses = ['co.pragma.*']
+        targetTests = ['co.pragma.*Test']
+        pitestVersion = '1.15.0'
+        junit5PluginVersion = '1.0.0'
+    }
+}
+
+tasks.named("sonar").configure {
+    dependsOn(":jacocoMergedReport")
 }
 
 apply from: './main.gradle'

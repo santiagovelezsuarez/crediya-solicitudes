@@ -4,7 +4,9 @@ import co.pragma.api.dto.response.ErrorResponse;
 import co.pragma.api.dto.request.SolicitarPrestamoDTO;
 import co.pragma.api.dto.response.SolicitudPrestamoResponseDTO;
 import co.pragma.api.handler.SolicitudPrestamoHandler;
+import co.pragma.api.security.SecurityHandlerFilter;
 import co.pragma.model.solicitudprestamo.projection.SolicitudPrestamoRevision;
+import co.pragma.security.PermissionEnum;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -14,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.RouterOperation;
 import org.springdoc.core.annotations.RouterOperations;
 import org.springframework.context.annotation.Bean;
@@ -21,14 +24,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.ServerResponse;
-
-import static org.springframework.web.reactive.function.server.RequestPredicates.*;
-import static org.springframework.web.reactive.function.server.RouterFunctions.route;
+import org.springframework.web.reactive.function.server.ServerResponse;import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 @Configuration
+@RequiredArgsConstructor
 public class RouterRest {
 
+    private final SecurityHandlerFilter securityFilter;
     private static final String ROUTE = "/api/v1/solicitud-prestamo";
 
     @Bean
@@ -38,10 +40,10 @@ public class RouterRest {
                     produces = {MediaType.APPLICATION_JSON_VALUE},
                     method = RequestMethod.POST,
                     beanClass = SolicitudPrestamoHandler.class,
-                    beanMethod = "listenCreateSolicitud",
+                    beanMethod = "listenRegistrarSolicitud", // corregido
                     operation = @Operation(
                             operationId = "crearSolicitudPrestamo",
-                            summary = "Crear una nueva solicitud de préstamo para un cliente autenticado",
+                            summary = "Crear una nueva solicitud de préstamo",
                             tags = {"Solicitud de Préstamo"},
                             security = { @SecurityRequirement(name = "bearerAuth") },
                             requestBody = @RequestBody(
@@ -65,11 +67,10 @@ public class RouterRest {
                     produces = {MediaType.APPLICATION_JSON_VALUE},
                     method = RequestMethod.GET,
                     beanClass = SolicitudPrestamoHandler.class,
-                    beanMethod = "listenListSolicitudesPendientes",
+                    beanMethod = "listenListarSolicitudesPendientes", // corregido
                     operation = @Operation(
                             operationId = "listarSolicitudesPendientesRevision",
-                            summary = "Listar solicitudes de préstamo pendientes de revisión manual",
-                            description = "Retorna una lista paginada de solicitudes en estado Pendiente de revisión, Rechazadas o en Revisión manual. Solo accesible para usuarios con rol Asesor.",
+                            summary = "Listar solicitudes pendientes",
                             tags = {"Solicitud de Préstamo"},
                             security = { @SecurityRequirement(name = "bearerAuth") },
                             parameters = {
@@ -85,12 +86,39 @@ public class RouterRest {
                                             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
                             }
                     )
+            ),
+            @RouterOperation(
+                    path = "/api/v1/solicitud-prestamo",
+                    produces = {MediaType.APPLICATION_JSON_VALUE},
+                    method = RequestMethod.PUT,
+                    beanClass = SolicitudPrestamoHandler.class,
+                    beanMethod = "listenAprobarSolicitud", // agregado
+                    operation = @Operation(
+                            operationId = "aprobarSolicitudPrestamo",
+                            summary = "Aprobar solicitud de préstamo",
+                            tags = {"Solicitud de Préstamo"},
+                            security = { @SecurityRequirement(name = "bearerAuth") }
+
             )
+    )
     })
     public RouterFunction<ServerResponse> solicitudPrestamoRoutes(SolicitudPrestamoHandler solicitudPrestamoHandler) {
-        return route(POST(ROUTE), solicitudPrestamoHandler::listenRegistrarSolicitud)
-                .andRoute(GET(ROUTE), solicitudPrestamoHandler::listenListarSolicitudesPendientes)
-                .andRoute(PUT(ROUTE), solicitudPrestamoHandler::listenAprobarSolicitud);
+        RouterFunction<ServerResponse> postRoute = route()
+                .POST(ROUTE, solicitudPrestamoHandler::listenRegistrarSolicitud)
+                .filter(securityFilter.requirePermission(PermissionEnum.SOLICITAR_PRESTAMO))
+                .build();
+
+        RouterFunction<ServerResponse> getRoute = route()
+                .GET(ROUTE, solicitudPrestamoHandler::listenListarSolicitudesPendientes)
+                .filter(securityFilter.requirePermission(PermissionEnum.LISTAR_SOLICITUDES_PENDIENTES))
+                .build();
+
+        RouterFunction<ServerResponse> putRoute = route()
+                .PUT(ROUTE, solicitudPrestamoHandler::listenAprobarSolicitud)
+                .filter(securityFilter.requirePermission(PermissionEnum.APROBAR_SOLICITUD))
+                .build();
+
+        return postRoute.and(getRoute).and(putRoute);
     }
 
     @Bean
@@ -111,7 +139,8 @@ public class RouterRest {
             )
     )
     public RouterFunction<ServerResponse> healthRoutes() {
-        return route(GET("/api/health"),
-                request -> ServerResponse.ok().bodyValue("OK"));
+        return route()
+                .GET("/api/health", r -> ServerResponse.ok().bodyValue("OK"))
+                .build();
     }
 }

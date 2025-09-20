@@ -1,7 +1,6 @@
-package co.pragma.model.session;
+package co.pragma.security;
 
-public enum Permission {
-    REGISTRAR_USUARIO,
+public enum PermissionEnum {
     SOLICITAR_PRESTAMO,
     LISTAR_SOLICITUDES_PENDIENTES,
     APROBAR_SOLICITUD,
