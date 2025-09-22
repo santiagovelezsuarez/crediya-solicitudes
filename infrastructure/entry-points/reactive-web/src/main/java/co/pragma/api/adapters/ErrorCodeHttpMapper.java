@@ -1,4 +1,4 @@
-package co.pragma.api;
+package co.pragma.api.adapters;
 
 import co.pragma.exception.ErrorCode;
 import org.springframework.http.HttpStatus;

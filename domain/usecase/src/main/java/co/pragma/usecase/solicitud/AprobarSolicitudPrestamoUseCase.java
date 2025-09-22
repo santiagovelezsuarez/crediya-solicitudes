@@ -9,13 +9,13 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class AprobarSolicitudPrestamoUseCase {
 
-    private final ActualizarEstadoSolicitudUseCase actualizarEstadoSolicitudUseCase;
+    private final ProcesarDecisionSolicitudUseCase procesarDecisionSolicitudUseCase;
 
     public Mono<SolicitudPrestamo> execute(AprobarSolicitudCommand cmd) {
         DecisionSolicitudPrestamo decisionSolicitudPrestamo = DecisionSolicitudPrestamo.builder()
                 .codigoSolicitud(cmd.codigoSolicitud())
                 .decision(cmd.estado())
                 .build();
-        return actualizarEstadoSolicitudUseCase.execute(decisionSolicitudPrestamo);
+        return procesarDecisionSolicitudUseCase.execute(decisionSolicitudPrestamo);
     }
 }

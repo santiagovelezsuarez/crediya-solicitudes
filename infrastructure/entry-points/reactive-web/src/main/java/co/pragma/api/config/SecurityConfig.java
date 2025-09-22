@@ -13,7 +13,7 @@ public class SecurityConfig {
     @Bean
     public CorsWebFilter corsFilter() {
         var config = new org.springframework.web.cors.CorsConfiguration();
-        config.addAllowedOrigin("http://localhost:8080/swagger-ui");
+        config.addAllowedOrigin("http://localhost:8081/swagger-ui");
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
         config.setAllowCredentials(true);

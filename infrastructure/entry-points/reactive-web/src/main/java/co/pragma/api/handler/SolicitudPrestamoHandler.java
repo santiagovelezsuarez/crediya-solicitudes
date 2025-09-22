@@ -5,9 +5,7 @@ import co.pragma.api.dto.DtoValidator;
 import co.pragma.api.dto.request.AprobarSolicitudDTO;
 import co.pragma.api.dto.request.SolicitarPrestamoDTO;
 import co.pragma.api.mapper.SolicitudPrestamoDtoMapper;
-import co.pragma.api.security.UserContextSupport;
 import co.pragma.model.solicitudprestamo.command.SolicitarPrestamoCommand;
-import co.pragma.security.UserContextRequest;
 import co.pragma.usecase.solicitud.AprobarSolicitudPrestamoUseCase;
 import co.pragma.usecase.solicitud.ListarSolicitudesRevisionManualUseCase;
 import co.pragma.usecase.solicitud.SolicitarPrestamoUseCase;
@@ -64,7 +62,7 @@ public class SolicitudPrestamoHandler {
                 .flatMap(dtoValidator::validate)
                 .map(SolicitudPrestamoDtoMapper::toAprobarCommand)
                 .flatMap(aprobarSolicitudPrestamoUseCase::execute)
-                .doOnNext(solicitud -> log.info("Solicitud {} actualizada", solicitud.getCodigo()))
+                .doOnNext(solicitud -> log.trace("Solicitud {} actualizada", solicitud.getCodigo()))
                 .map(mapper::toResponse)
                 .flatMap(responseService::okJson);
     }
