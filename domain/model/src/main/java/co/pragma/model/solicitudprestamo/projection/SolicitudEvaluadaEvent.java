@@ -5,7 +5,7 @@ import lombok.Builder;
 import java.math.BigDecimal;
 
 @Builder
-public record EstadoSolicitudEvent(
+public record SolicitudEvaluadaEvent(
         String codigoSolicitud,
         String emailCliente,
         String nombreCliente,

@@ -26,7 +26,7 @@ sonar {
         property "sonar.modules", "${modules.join(',')}"
         property "sonar.sources", "src,deployment,settings.gradle,main.gradle,build.gradle,${modules.collect { "${it}/build.gradle" }.join(',')}"
         property "sonar.exclusions",
-                "**/MainApplication.java," +
+                        "**/MainApplication.java," +
                         "**/*Application.java," +
                         "**/*Config.java," +
                         "**/config/**," +

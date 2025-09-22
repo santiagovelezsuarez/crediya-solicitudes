@@ -25,7 +25,11 @@ public class SecurityHandlerFilter {
 
             return permissionValidator.requirePermission(context, permissionEnum)
                     .then(next.handle(request)
-                            .contextWrite(ctx -> ctx.put("userId", context.userId())));
+                            .contextWrite(ctx -> {
+                                if (context.userId() != null)
+                                    return ctx.put("userId", context.userId());
+                                return ctx;
+                            }));
         });
     }
 }

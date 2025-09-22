@@ -1,7 +1,7 @@
 package co.pragma.sqs.listener;
 
 import co.pragma.model.solicitudprestamo.projection.DecisionSolicitudPrestamo;
-import co.pragma.usecase.solicitud.ActualizarEstadoSolicitudUseCase;
+import co.pragma.usecase.solicitud.ProcesarDecisionSolicitudUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,14 +16,14 @@ import java.util.function.Function;
 public class SQSResultadoEvaluacionAutoProcessor implements Function<Message, Mono<Void>> {
 
     private final ObjectMapper objectMapper;
-    private final ActualizarEstadoSolicitudUseCase actualizarEstadoSolicitudUseCase;
+    private final ProcesarDecisionSolicitudUseCase procesarDecisionSolicitudUseCase;
 
     @Override
     public Mono<Void> apply(Message message) {
         log.debug("Mensaje recibido desde SQSResultadoEvaluacionAuto: {}", message.body());
         return Mono.fromCallable(() -> objectMapper.readValue(message.body(), DecisionSolicitudPrestamo.class))
                 .doOnNext(resultado -> log.trace("Procesando resultado para solicitud {}", resultado.getCodigoSolicitud()))
-                .flatMap(actualizarEstadoSolicitudUseCase::execute)
+                .flatMap(procesarDecisionSolicitudUseCase::execute)
                 .doOnSuccess(v -> log.debug("Actualización de estado completada"))
                 .doOnError(e -> log.error("Error procesando mensaje SQS: {}", message.body(), e))
                 .then();
