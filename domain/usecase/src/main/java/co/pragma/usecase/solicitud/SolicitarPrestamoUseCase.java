@@ -3,7 +3,7 @@ package co.pragma.usecase.solicitud;
 import co.pragma.exception.business.TipoPrestamoNotFoundException;
 import co.pragma.model.cliente.Cliente;
 import co.pragma.model.cliente.gateways.ClienteRepository;
-import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
+import co.pragma.model.estadosolicitud.EstadoSolicitudCodigoEnum;
 import co.pragma.model.solicitudprestamo.command.SolicitarPrestamoCommand;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
@@ -38,11 +38,11 @@ public class SolicitarPrestamoUseCase {
                         .thenReturn(toInitialEntity(cmd, tipo))
                         .flatMap(solicitud -> {
                             if(tipo.estaValidacionAutomatica()){
-                                solicitud.setEstado(EstadoSolicitudCodigo.PENDIENTE_VALIDACION_AUTOMATICA);
+                                solicitud.setEstado(EstadoSolicitudCodigoEnum.PENDIENTE_VALIDACION_AUTOMATICA);
                                 return solicitudPrestamoRepository.save(solicitud)
                                         .flatMap(savedSolicitud -> publicarEvento(savedSolicitud).thenReturn(savedSolicitud));
                             } else {
-                                solicitud.setEstado(EstadoSolicitudCodigo.PENDIENTE_REVISION);
+                                solicitud.setEstado(EstadoSolicitudCodigoEnum.PENDIENTE_REVISION);
                                 return solicitudPrestamoRepository.save(solicitud);
                             }
                         })
@@ -56,7 +56,7 @@ public class SolicitarPrestamoUseCase {
                 .monto(cmd.monto())
                 .plazoEnMeses(cmd.plazoEnMeses())
                 .tasaInteres(tipoPrestamo.getTasaInteres())
-                .estado(EstadoSolicitudCodigo.PENDIENTE_REVISION)
+                .estado(EstadoSolicitudCodigoEnum.PENDIENTE_REVISION)
                 .codigo(generarCodigo())
                 .tasaInteres(tipoPrestamo.getTasaInteres())
                 .build();
@@ -77,7 +77,7 @@ public class SolicitarPrestamoUseCase {
         Mono<Cliente> clienteMono = clienteRepository.findById(solicitud.getIdCliente());
         Mono<TipoPrestamo> tipoMono = tipoPrestamoRepository.findById(String.valueOf(solicitud.getIdTipoPrestamo()));
         Mono<List<PrestamoInfo>> prestamosActivosMono = solicitudPrestamoRepository
-                .findByIdClienteAndIdEstado(solicitud.getIdCliente(), EstadoSolicitudCodigo.APROBADA)
+                .findByIdClienteAndIdEstado(solicitud.getIdCliente(), EstadoSolicitudCodigoEnum.APROBADA)
                 .map(this::toPrestamoInfo)
                 .collectList();
 

@@ -3,7 +3,7 @@ package co.pragma.api.mapper;
 import co.pragma.api.dto.request.AprobarSolicitudDTO;
 import co.pragma.api.dto.request.SolicitarPrestamoDTO;
 import co.pragma.api.dto.response.SolicitudPrestamoResponseDTO;
-import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
+import co.pragma.model.estadosolicitud.EstadoSolicitudCodigoEnum;
 import co.pragma.model.solicitudprestamo.*;
 import co.pragma.model.solicitudprestamo.command.AprobarSolicitudCommand;
 import co.pragma.model.solicitudprestamo.command.SolicitarPrestamoCommand;
@@ -35,7 +35,7 @@ public class SolicitudPrestamoDtoMapper {
     public static AprobarSolicitudCommand toAprobarCommand(AprobarSolicitudDTO dto) {
         return AprobarSolicitudCommand.builder()
                 .codigoSolicitud(dto.getCodigoSolicitud())
-                .estado(EstadoSolicitudCodigo.valueOf(dto.getDecisionFinal().toUpperCase()))
+                .estado(EstadoSolicitudCodigoEnum.valueOf(dto.getDecisionFinal().toUpperCase()))
                 .build();
     }
 }

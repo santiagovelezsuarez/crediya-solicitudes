@@ -1,6 +1,6 @@
 package co.pragma.model.solicitudprestamo.gateways;
 
-import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
+import co.pragma.model.estadosolicitud.EstadoSolicitudCodigoEnum;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -17,5 +17,5 @@ public interface SolicitudPrestamoRepository {
 
     Mono<Void> markAsNotificado(String codigo, Boolean notificado);
 
-    Flux<SolicitudPrestamo> findByIdClienteAndIdEstado(UUID idCliente, EstadoSolicitudCodigo estadoSolicitudCodigo);
+    Flux<SolicitudPrestamo> findByIdClienteAndIdEstado(UUID idCliente, EstadoSolicitudCodigoEnum estadoSolicitudCodigoEnum);
 }

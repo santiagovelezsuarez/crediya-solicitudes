@@ -1,6 +1,5 @@
 package co.pragma.sqs.listener.helper;
 
-import co.pragma.sqs.listener.SQSResultadoEvaluacionAutoProcessor;
 import co.pragma.sqs.listener.config.SQSProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,13 +7,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
-import software.amazon.awssdk.services.sqs.model.DeleteMessageRequest;
-import software.amazon.awssdk.services.sqs.model.DeleteMessageResponse;
-import software.amazon.awssdk.services.sqs.model.Message;
-import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
-import software.amazon.awssdk.services.sqs.model.ReceiveMessageResponse;
+import software.amazon.awssdk.services.sqs.model.*;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -33,16 +29,6 @@ class SQSListenerTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        var sqsProperties = new SQSProperties(
-                "us-east-1",
-                "http://localhost:4566",
-                "http://localhost:4566/00000000000/queueName",
-                20,
-                30,
-                10,
-                1
-        );
-
         var message = Message.builder().body("message").build();
         var deleteMessageResponse = DeleteMessageResponse.builder().build();
         var messageResponse = ReceiveMessageResponse.builder().messages(message).build();
@@ -57,8 +43,16 @@ class SQSListenerTest {
     void listenerTest() {
         var sqsListener = SQSListener.builder()
                 .client(asyncClient)
-                .properties(sqsProperties)
-                //.processor(new SQSResultadoEvaluacionAutoProcessor())
+                .properties(new SQSProperties(
+                        "us-east-1",
+                        "http://localhost:4566",
+                        "http://localhost:4566/00000000000/queueName",
+                        20,
+                        30,
+                        10,
+                        1
+                ))
+                .processor(message -> Mono.empty())
                 .operation("operation")
                 .build();
 

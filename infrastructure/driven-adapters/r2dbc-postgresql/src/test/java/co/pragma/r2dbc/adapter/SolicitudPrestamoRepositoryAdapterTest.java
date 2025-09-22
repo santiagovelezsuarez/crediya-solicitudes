@@ -2,7 +2,7 @@ package co.pragma.r2dbc.adapter;
 
 import co.pragma.exception.ErrorCode;
 import co.pragma.exception.InfrastructureException;
-import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
+import co.pragma.model.estadosolicitud.EstadoSolicitudCodigoEnum;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.r2dbc.entity.SolicitudPrestamoEntity;
 import co.pragma.r2dbc.mapper.SolicitudPrestamoEntityMapper;
@@ -16,9 +16,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
+
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -104,7 +106,7 @@ class SolicitudPrestamoRepositoryAdapterTest {
         when(repository.findByIdClienteAndIdEstado(any(UUID.class), anyInt()))
                 .thenReturn(Flux.empty());
 
-        StepVerifier.create(adapter.findByIdClienteAndIdEstado(UUID.randomUUID(), EstadoSolicitudCodigo.RECHAZADA))
+        StepVerifier.create(adapter.findByIdClienteAndIdEstado(UUID.randomUUID(), EstadoSolicitudCodigoEnum.RECHAZADA))
                 .verifyComplete();
     }
 
@@ -113,8 +115,53 @@ class SolicitudPrestamoRepositoryAdapterTest {
         when(repository.findByIdClienteAndIdEstado(any(UUID.class), anyInt()))
                 .thenReturn(Flux.error(new RuntimeException("DB error")));
 
-        StepVerifier.create(adapter.findByIdClienteAndIdEstado(idCliente, EstadoSolicitudCodigo.PENDIENTE_REVISION))
+        StepVerifier.create(adapter.findByIdClienteAndIdEstado(idCliente, EstadoSolicitudCodigoEnum.PENDIENTE_REVISION))
                 .expectError(InfrastructureException.class)
+                .verify();
+    }
+
+    @Test
+    void shouldReturnInfrastructureExceptionWhenSaveFails() {
+        when(mapper.toEntity(solicitudPrestamo)).thenReturn(entity);
+        when(repository.save(entity)).thenReturn(Mono.error(new RuntimeException("DB error")));
+
+        StepVerifier.create(adapter.save(solicitudPrestamo))
+                .expectErrorMatches(this::isInfrastructureException)
+                .verify();
+    }
+
+    @Test
+    void shouldFindByCodigoSuccessfully() {
+        when(repository.findByCodigo("ABC123")).thenReturn(Mono.just(entity));
+        when(mapper.toDomain(entity)).thenReturn(solicitudPrestamo);
+
+        StepVerifier.create(adapter.findByCodigo("ABC123"))
+                .expectNext(solicitudPrestamo)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnEmptyWhenFindByCodigoNotFound() {
+        when(repository.findByCodigo("NOT_FOUND")).thenReturn(Mono.empty());
+
+        StepVerifier.create(adapter.findByCodigo("NOT_FOUND")).verifyComplete();
+    }
+
+    @Test
+    void shouldMarkAsNotificadoSuccessfully() {
+        when(repository.markAsNotificado("COD123", true)).thenReturn(Mono.empty());
+
+        StepVerifier.create(adapter.markAsNotificado("COD123", true)).verifyComplete();
+        verify(repository).markAsNotificado("COD123", true);
+    }
+
+    @Test
+    void shouldPropagateErrorWhenMarkAsNotificadoFails() {
+        when(repository.markAsNotificado("COD123", false)).thenReturn(Mono.error(new RuntimeException("DB error")));
+
+        StepVerifier.create(adapter.markAsNotificado("COD123", false))
+                .expectErrorMatches(ex -> ex instanceof RuntimeException &&
+                        ex.getMessage().equals("DB error"))
                 .verify();
     }
 

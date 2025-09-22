@@ -21,7 +21,7 @@ public class UserContextExtractor {
     private static final String HEADER_USER_EMAIL = "x-user-email";
     private static final String HEADER_USER_PERMISSIONS = "x-user-permissions";
 
-    private UserContextExtractor(){}
+    protected UserContextExtractor(){}
 
     public UserContextRequest fromRequest(ServerRequest request) {
         String userId = request.headers().firstHeader(HEADER_USER_ID);

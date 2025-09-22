@@ -1,15 +1,13 @@
 package co.pragma.api.handler;
 
-import co.pragma.api.adapters.ResponseService;
+import co.pragma.api.adapter.ResponseService;
 import co.pragma.api.dto.DtoValidator;
 import co.pragma.api.mapper.SolicitudPrestamoDtoMapper;
-import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.projection.SolicitudPrestamoRevision;
 import co.pragma.usecase.security.PermissionValidator;
 import co.pragma.usecase.solicitud.AprobarSolicitudPrestamoUseCase;
 import co.pragma.usecase.solicitud.ListarSolicitudesRevisionManualUseCase;
 import co.pragma.usecase.solicitud.SolicitarPrestamoUseCase;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

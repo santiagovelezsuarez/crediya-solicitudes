@@ -1,5 +1,5 @@
 package co.pragma.model.solicitudprestamo;
-import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
+import co.pragma.model.estadosolicitud.EstadoSolicitudCodigoEnum;
 import lombok.*;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -18,7 +18,7 @@ public class SolicitudPrestamo {
     private BigDecimal monto;
     private Integer plazoEnMeses;
     private BigDecimal tasaInteres;
-    private EstadoSolicitudCodigo estado;
+    private EstadoSolicitudCodigoEnum estado;
     private Boolean notificado;
 
     /**
@@ -50,8 +50,8 @@ public class SolicitudPrestamo {
     }
 
     public boolean esProcesable() {
-        return estado == EstadoSolicitudCodigo.PENDIENTE_REVISION ||
-               estado == EstadoSolicitudCodigo.PENDIENTE_VALIDACION_AUTOMATICA ||
-               estado == EstadoSolicitudCodigo.REVISION_MANUAL;
+        return estado == EstadoSolicitudCodigoEnum.PENDIENTE_REVISION ||
+               estado == EstadoSolicitudCodigoEnum.PENDIENTE_VALIDACION_AUTOMATICA ||
+               estado == EstadoSolicitudCodigoEnum.REVISION_MANUAL;
     }
 }

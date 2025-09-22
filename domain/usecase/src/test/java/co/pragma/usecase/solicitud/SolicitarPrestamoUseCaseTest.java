@@ -1,8 +1,11 @@
 package co.pragma.usecase.solicitud;
 
 import co.pragma.exception.business.TipoPrestamoNotFoundException;
-import co.pragma.model.solicitudprestamo.command.SolicitarPrestamoCommand;
+import co.pragma.model.cliente.Cliente;
+import co.pragma.model.cliente.gateways.ClienteRepository;
+import co.pragma.model.estadosolicitud.EstadoSolicitudCodigoEnum;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
+import co.pragma.model.solicitudprestamo.command.SolicitarPrestamoCommand;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
 import co.pragma.model.solicitudprestamo.gateways.ValidacionAutomaticaEventPublisher;
 import co.pragma.model.tipoprestamo.TipoPrestamo;
@@ -14,112 +17,133 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+
 import java.math.BigDecimal;
 import java.util.UUID;
+
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class SolicitarPrestamoUseCaseTest {
 
     @Mock
-    private SolicitudPrestamoRepository solicitudPrestamoRepository;
-
+    private SolicitudPrestamoRepository solicitudRepo;
     @Mock
-    private TipoPrestamoRepository tipoPrestamoRepository;
-
+    private TipoPrestamoRepository tipoRepo;
     @Mock
-    private TipoPrestamoValidator tipoPrestamoValidator;
-
+    private TipoPrestamoValidator validator;
     @Mock
-    private ValidacionAutomaticaEventPublisher validacionAutomaticaEventPublisher;
+    private ValidacionAutomaticaEventPublisher publisher;
+    @Mock
+    private ClienteRepository clienteRepo;
 
     @InjectMocks
     private SolicitarPrestamoUseCase useCase;
 
-    private SolicitarPrestamoCommand cmd;
-    private TipoPrestamo tipoPrestamo;
-    private TipoPrestamo tipoPrestamoManual;
-    private TipoPrestamo tipoPrestamoAutomatico;
-    private SolicitudPrestamo solicitudPrestamo;
+    private SolicitarPrestamoCommand cmdManual;
+    private SolicitarPrestamoCommand cmdAutomatico;
+    private SolicitarPrestamoCommand cmdHipotecario;
+    private TipoPrestamo tipoManual;
+    private TipoPrestamo tipoAutomatico;
+    private TipoPrestamo tipoHipotecario;
+    private SolicitudPrestamo solicitud;
+    private Cliente cliente;
 
     @BeforeEach
     void setUp() {
-        cmd = SolicitarPrestamoCommand.builder()
-                .idCliente(UUID.randomUUID().toString())
-                .monto(new BigDecimal("10000.00"))
-                .plazoEnMeses(12)
-                .tipoPrestamo("HIPOTECARIO")
-                .build();
+        UUID clienteId = UUID.randomUUID();
+        cmdManual = new SolicitarPrestamoCommand(clienteId.toString(), BigDecimal.valueOf(10000), 12, "MANUAL");
+        cmdAutomatico = new SolicitarPrestamoCommand(clienteId.toString(), BigDecimal.valueOf(5000), 6, "AUTOMATICO");
+        cmdHipotecario = new SolicitarPrestamoCommand(UUID.randomUUID().toString(), BigDecimal.valueOf(10000), 12, "HIPOTECARIO");
 
-        tipoPrestamo = TipoPrestamo.builder()
+        tipoManual = TipoPrestamo.builder().id(UUID.randomUUID()).nombre("MANUAL").validacionAutomatica(false).tasaInteres(BigDecimal.valueOf(0.1)).build();
+        tipoAutomatico = TipoPrestamo.builder().id(UUID.randomUUID()).nombre("AUTOMATICO").validacionAutomatica(true).tasaInteres(BigDecimal.valueOf(0.08)).build();
+        tipoHipotecario = TipoPrestamo.builder().id(UUID.randomUUID()).nombre("HIPOTECARIO").validacionAutomatica(false).build();
+
+        solicitud = SolicitudPrestamo.builder()
                 .id(UUID.randomUUID())
-                .nombre("HIPOTECARIO")
-                .validacionAutomatica(false)
+                .idCliente(UUID.fromString(cmdHipotecario.idCliente()))
+                .monto(cmdHipotecario.monto())
+                .plazoEnMeses(cmdHipotecario.plazoEnMeses())
+                .idTipoPrestamo(tipoHipotecario.getId())
+                .estado(EstadoSolicitudCodigoEnum.PENDIENTE_VALIDACION_AUTOMATICA)
                 .build();
 
-        tipoPrestamoAutomatico = TipoPrestamo.builder()
-                .id(UUID.randomUUID())
-                .nombre("AUTOMATICA")
-                .validacionAutomatica(true)
-                .tasaInteres(new BigDecimal("0.08"))
-                .build();
+        cliente = Cliente.builder().id(clienteId).nombres("santi").apellidos("velez").email("santi@mail.co").build();
+    }
 
-        solicitudPrestamo = SolicitudPrestamo.builder()
-                .idCliente(UUID.fromString(cmd.idCliente()))
-                .monto(cmd.monto())
-                .plazoEnMeses(cmd.plazoEnMeses())
-                .idTipoPrestamo(tipoPrestamo.getId())
-                .build();
-
-        tipoPrestamoManual = TipoPrestamo.builder()
-                .id(UUID.randomUUID())
-                .nombre("MANUAL")
-                .validacionAutomatica(false)
-                .tasaInteres(new BigDecimal("0.10"))
-                .build();
+    private void mockTipoPrestamo(String nombre, TipoPrestamo tipo) {
+        when(tipoRepo.findByNombre(nombre)).thenReturn(Mono.just(tipo));
+        when(validator.validate(any())).thenReturn(Mono.empty());
     }
 
     @Test
     void shouldSaveSolicitudPrestamoWhenCommandIsValid() {
-        when(tipoPrestamoRepository.findByNombre(cmd.tipoPrestamo())).thenReturn(Mono.just(tipoPrestamo));
-        when(tipoPrestamoValidator.validate(cmd)).thenReturn(Mono.empty());
-        when(solicitudPrestamoRepository.save(any(SolicitudPrestamo.class))).thenReturn(Mono.just(solicitudPrestamo));
+        mockTipoPrestamo(cmdHipotecario.tipoPrestamo(), tipoHipotecario);
+        when(solicitudRepo.save(any())).thenReturn(Mono.just(solicitud));
 
-        StepVerifier.create(useCase.execute(cmd))
-                .expectNextMatches(solicitud -> solicitud.getIdCliente().equals(solicitudPrestamo.getIdCliente()) &&
-                        solicitud.getMonto().equals(solicitudPrestamo.getMonto()))
+        StepVerifier.create(useCase.execute(cmdHipotecario))
+                .expectNextMatches(s -> s.getMonto().equals(solicitud.getMonto()))
                 .verifyComplete();
 
-        verify(tipoPrestamoRepository).findByNombre(cmd.tipoPrestamo());
-        verify(tipoPrestamoValidator).validate(cmd);
-        verify(solicitudPrestamoRepository).save(any(SolicitudPrestamo.class));
+        verify(solicitudRepo).save(any());
     }
 
     @Test
     void shouldReturnErrorWhenTipoPrestamoNotFound() {
-        when(tipoPrestamoRepository.findByNombre(anyString())).thenReturn(Mono.empty());
+        when(tipoRepo.findByNombre(anyString())).thenReturn(Mono.empty());
 
-        StepVerifier.create(useCase.execute(cmd))
+        StepVerifier.create(useCase.execute(cmdHipotecario))
                 .expectError(TipoPrestamoNotFoundException.class)
                 .verify();
 
-        verify(tipoPrestamoRepository).findByNombre(cmd.tipoPrestamo());
-        verifyNoInteractions(tipoPrestamoValidator);
-        verifyNoInteractions(solicitudPrestamoRepository);
+        verifyNoInteractions(solicitudRepo);
     }
 
     @Test
     void shouldReturnErrorWhenValidatorFails() {
-        when(tipoPrestamoRepository.findByNombre(anyString())).thenReturn(Mono.just(tipoPrestamoManual));
-        when(tipoPrestamoValidator.validate(any())).thenReturn(Mono.error(new IllegalArgumentException("Validation failed")));
+        mockTipoPrestamo(cmdManual.tipoPrestamo(), tipoManual);
+        when(validator.validate(any())).thenReturn(Mono.error(new IllegalArgumentException("Validation failed")));
 
-        StepVerifier.create(useCase.execute(cmd))
+        StepVerifier.create(useCase.execute(cmdManual))
                 .expectError(IllegalArgumentException.class)
                 .verify();
 
-        verify(solicitudPrestamoRepository, never()).save(any(SolicitudPrestamo.class));
-        verifyNoInteractions(validacionAutomaticaEventPublisher);
+        verify(solicitudRepo, never()).save(any());
+    }
+
+    @Test
+    void shouldSaveAndNotPublishEventForManualLoan() {
+        mockTipoPrestamo(cmdManual.tipoPrestamo(), tipoManual);
+        when(solicitudRepo.save(any())).thenAnswer(inv -> {
+            SolicitudPrestamo s = inv.getArgument(0);
+            s.setId(UUID.randomUUID());
+            return Mono.just(s);
+        });
+
+        StepVerifier.create(useCase.execute(cmdManual))
+                .expectNextMatches(s -> s.getEstado().equals(EstadoSolicitudCodigoEnum.PENDIENTE_REVISION))
+                .verifyComplete();
+
+        verifyNoInteractions(publisher);
+    }
+
+    @Test
+    void shouldSaveAndPublishEventForAutomaticLoan() {
+        mockTipoPrestamo(cmdAutomatico.tipoPrestamo(), tipoAutomatico);
+        when(solicitudRepo.save(any())).thenReturn(Mono.just(solicitud));
+        when(clienteRepo.findById(any())).thenReturn(Mono.just(cliente));
+        when(tipoRepo.findById(any())).thenReturn(Mono.just(tipoAutomatico));
+        when(solicitudRepo.findByIdClienteAndIdEstado(any(), any())).thenReturn(Flux.empty());
+        when(publisher.publish(any())).thenReturn(Mono.empty());
+
+        StepVerifier.create(useCase.execute(cmdAutomatico))
+                .expectNextMatches(s -> s.getEstado().equals(EstadoSolicitudCodigoEnum.PENDIENTE_VALIDACION_AUTOMATICA))
+                .verifyComplete();
+
+        verify(publisher).publish(any());
     }
 }

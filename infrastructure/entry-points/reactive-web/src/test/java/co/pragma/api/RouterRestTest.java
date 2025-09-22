@@ -1,6 +1,6 @@
 package co.pragma.api;
 
-import co.pragma.api.adapters.ResponseService;
+import co.pragma.api.adapter.ResponseService;
 import co.pragma.api.dto.DtoValidator;
 import co.pragma.api.dto.request.SolicitarPrestamoDTO;
 import co.pragma.api.dto.response.SolicitudPrestamoResponseDTO;

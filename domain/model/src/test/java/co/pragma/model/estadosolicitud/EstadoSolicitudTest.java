@@ -10,7 +10,7 @@ class EstadoSolicitudTest {
     void shouldBuildEstadoSolicitudCorrectly() {
         EstadoSolicitud estado = EstadoSolicitud.builder()
                 .id(1)
-                .nombre(EstadoSolicitudCodigo.PENDIENTE_REVISION)
+                .nombre(EstadoSolicitudCodigoEnum.PENDIENTE_REVISION)
                 .descripcion("Solicitud en espera de aprobación")
                 .build();
 

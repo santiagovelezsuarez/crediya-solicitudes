@@ -1,17 +1,10 @@
 package co.pragma.api.config;
 
-import co.pragma.api.adapters.ResponseService;
-import co.pragma.api.dto.DtoValidator;
 import co.pragma.api.handler.SolicitudPrestamoHandler;
 import co.pragma.api.RouterRest;
 import co.pragma.api.mapper.SolicitudPrestamoDtoMapper;
 import co.pragma.api.security.SecurityHandlerFilter;
 import co.pragma.api.security.UserContextExtractor;
-import co.pragma.model.cliente.gateways.ClienteRepository;
-import co.pragma.model.estadosolicitud.gateways.EstadoSolicitudRepository;
-import co.pragma.model.solicitudprestamo.gateways.SolicitudEvaluadaPublisher;
-import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
-import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
 import co.pragma.usecase.security.PermissionValidator;
 import co.pragma.usecase.solicitud.AprobarSolicitudPrestamoUseCase;
 import co.pragma.usecase.solicitud.ListarSolicitudesRevisionManualUseCase;
@@ -33,10 +26,10 @@ class ConfigTest {
     private WebTestClient webTestClient;
 
     @MockitoBean
-    private SolicitarPrestamoUseCase solicitarPrestamoUseCase;
+    private SolicitudPrestamoHandler solicitudPrestamoHandler;
 
     @MockitoBean
-    private ResponseService responseService;
+    private SolicitarPrestamoUseCase solicitarPrestamoUseCase;
 
     @MockitoBean
     private ListarSolicitudesRevisionManualUseCase listarSolicitudesRevisionManualUseCase;
@@ -45,25 +38,7 @@ class ConfigTest {
     private SolicitudPrestamoDtoMapper solicitudPrestamoDtoMapper;
 
     @MockitoBean
-    private TipoPrestamoRepository tipoPrestamoRepository;
-
-    @MockitoBean
-    private EstadoSolicitudRepository estadoSolicitudRepository;
-
-    @MockitoBean
     private AprobarSolicitudPrestamoUseCase aprobarSolicitudPrestamoUseCase;
-
-    @MockitoBean
-    private SolicitudEvaluadaPublisher solicitudEvaluadaPublisher;
-
-    @MockitoBean
-    private SolicitudPrestamoRepository solicitudPrestamoRepository;
-
-    @MockitoBean
-    private DtoValidator dtoValidator;
-
-    @MockitoBean
-    private ClienteRepository clienteRepository;
 
     @MockitoBean
     private PermissionValidator permissionValidator;

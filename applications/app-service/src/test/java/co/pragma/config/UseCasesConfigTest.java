@@ -2,6 +2,7 @@ package co.pragma.config;
 
 import co.pragma.model.cliente.gateways.ClienteRepository;
 import co.pragma.model.estadosolicitud.gateways.EstadoSolicitudRepository;
+import co.pragma.model.solicitudprestamo.gateways.SolicitudEvaluadaPublisher;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
 import co.pragma.model.tipoprestamo.gateways.TipoPrestamoRepository;
 import co.pragma.usecase.solicitud.ProcesarDecisionSolicitudUseCase;
@@ -83,6 +84,11 @@ class UseCasesConfigTest {
         @Bean
         public ProcesarDecisionSolicitudUseCase actualizarEstadoSolicitudUseCase() {
             return  Mockito.mock(ProcesarDecisionSolicitudUseCase.class);
+        }
+
+        @Bean
+        public SolicitudEvaluadaPublisher solicitudEvaluadaPublisher() {
+            return Mockito.mock(SolicitudEvaluadaPublisher.class);
         }
     }
 }

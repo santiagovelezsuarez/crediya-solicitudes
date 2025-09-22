@@ -1,6 +1,6 @@
 package co.pragma.model.solicitudprestamo.projection;
 
-import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
+import co.pragma.model.estadosolicitud.EstadoSolicitudCodigoEnum;
 import lombok.Builder;
 
 import java.math.BigDecimal;
@@ -15,7 +15,7 @@ public record  SolicitudPrestamoRevision(
         String nombreCliente,
         String tipoPrestamo,
         BigDecimal tasaInteres,
-        EstadoSolicitudCodigo estado,
+        EstadoSolicitudCodigoEnum estado,
         BigDecimal salarioBase,
         BigDecimal montoMensualSolicitud
 ){}
