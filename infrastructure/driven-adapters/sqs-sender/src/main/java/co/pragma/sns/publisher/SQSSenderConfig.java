@@ -1,4 +1,4 @@
-package co.pragma.sqs.sender.config;
+package co.pragma.sns.publisher;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;

@@ -4,7 +4,7 @@ import co.pragma.exception.business.SolicitudAlreadyProcessedException;
 import co.pragma.exception.business.SolicitudPrestamoNotFound;
 import co.pragma.model.cliente.Cliente;
 import co.pragma.model.cliente.gateways.ClienteRepository;
-import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
+import co.pragma.model.estadosolicitud.EstadoSolicitudCodigoEnum;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudEvaluadaPublisher;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
@@ -47,7 +47,7 @@ class ProcesarDecisionSolicitudUseCaseTest {
         solicitudEnRevision = SolicitudPrestamo.builder()
                 .codigo("SP-1234")
                 .idCliente(UUID.fromString("28f279f3-1ad7-47a7-a7e4-d3c9473afdc1"))
-                .estado(EstadoSolicitudCodigo.REVISION_MANUAL)
+                .estado(EstadoSolicitudCodigoEnum.REVISION_MANUAL)
                 .monto(BigDecimal.valueOf(10000))
                 .tasaInteres(BigDecimal.valueOf(0.05))
                 .plazoEnMeses(12)
@@ -55,7 +55,7 @@ class ProcesarDecisionSolicitudUseCaseTest {
 
         decisionAprobada = DecisionSolicitudPrestamo.builder()
                 .codigoSolicitud("SP-1234")
-                .decision(EstadoSolicitudCodigo.APROBADA)
+                .decision(EstadoSolicitudCodigoEnum.APROBADA)
                 .build();
 
         cliente = Cliente.builder()
@@ -75,7 +75,7 @@ class ProcesarDecisionSolicitudUseCaseTest {
 
         StepVerifier.create(useCase.execute(decisionAprobada))
                 .assertNext(updatedSolicitud -> {
-                    assertEquals(EstadoSolicitudCodigo.APROBADA, updatedSolicitud.getEstado());
+                    assertEquals(EstadoSolicitudCodigoEnum.APROBADA, updatedSolicitud.getEstado());
                     assertEquals(false, updatedSolicitud.getNotificado());
                 })
                 .verifyComplete();
@@ -93,7 +93,7 @@ class ProcesarDecisionSolicitudUseCaseTest {
 
     @Test
     void shouldReturnErrorWhenSolicitudIsAlreadyProcessed() {
-        solicitudEnRevision.setEstado(EstadoSolicitudCodigo.APROBADA);
+        solicitudEnRevision.setEstado(EstadoSolicitudCodigoEnum.APROBADA);
 
         when(solicitudPrestamoRepository.findByCodigo(anyString())).thenReturn(Mono.just(solicitudEnRevision));
 

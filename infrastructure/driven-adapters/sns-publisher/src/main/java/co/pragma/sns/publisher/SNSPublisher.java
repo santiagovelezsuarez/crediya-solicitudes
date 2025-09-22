@@ -18,11 +18,7 @@ public class SNSPublisher {
     private final SnsAsyncClient snsAsyncClient;
     private final ObjectMapper objectMapper;
 
-    public <T> Mono<Void> publishEvent(String topicAlias, T event) {
-        return publishEvent(topicAlias, event, null);
-    }
-
-    public <T> Mono<Void> publishEvent(String topicAlias, T event, String subject) {
+   public <T> Mono<Void> publishEvent(String topicAlias, T event, String subject) {
         return Mono.fromCallable(() -> objectMapper.writeValueAsString(event))
                 .flatMap(json -> publish(topicAlias, json, subject))
                 .then();

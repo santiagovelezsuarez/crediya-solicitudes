@@ -1,6 +1,6 @@
 package co.pragma.r2dbc.mapper;
 
-import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
+import co.pragma.model.estadosolicitud.EstadoSolicitudCodigoEnum;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.r2dbc.entity.SolicitudPrestamoEntity;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ public class SolicitudPrestamoEntityMapper {
                 .plazoEnMeses(entity.getPlazoEnMeses())
                 .tasaInteres(entity.getTasaInteres())
                 .estado(entity.getIdEstado() != null
-                        ? EstadoSolicitudCodigo.fromCode(entity.getIdEstado())
+                        ? EstadoSolicitudCodigoEnum.fromCode(entity.getIdEstado())
                         : null)
                 .notificado(entity.getNotificado())
                 .tasaInteres(entity.getTasaInteres())

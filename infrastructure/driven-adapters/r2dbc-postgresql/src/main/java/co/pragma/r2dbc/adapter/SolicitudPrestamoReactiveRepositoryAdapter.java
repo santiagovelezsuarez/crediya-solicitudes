@@ -2,7 +2,7 @@ package co.pragma.r2dbc.adapter;
 
 import co.pragma.exception.ErrorCode;
 import co.pragma.exception.InfrastructureException;
-import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
+import co.pragma.model.estadosolicitud.EstadoSolicitudCodigoEnum;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
 import co.pragma.r2dbc.mapper.SolicitudPrestamoEntityMapper;
@@ -55,9 +55,9 @@ public class SolicitudPrestamoReactiveRepositoryAdapter implements SolicitudPres
     }
 
     @Override
-    public Flux<SolicitudPrestamo> findByIdClienteAndIdEstado(UUID idCliente, EstadoSolicitudCodigo estadoSolicitudCodigo) {
-        log.info("Buscando solicitudes de prestamo {} para el cliente {}", estadoSolicitudCodigo.name(), idCliente);
-        return solicitudRepository.findByIdClienteAndIdEstado(idCliente, estadoSolicitudCodigo.getCode())
+    public Flux<SolicitudPrestamo> findByIdClienteAndIdEstado(UUID idCliente, EstadoSolicitudCodigoEnum estadoSolicitudCodigoEnum) {
+        log.info("Buscando solicitudes de prestamo {} para el cliente {}", estadoSolicitudCodigoEnum.name(), idCliente);
+        return solicitudRepository.findByIdClienteAndIdEstado(idCliente, estadoSolicitudCodigoEnum.getCode())
                 .map(mapper::toDomain)
                 .onErrorMap(ex -> new InfrastructureException(ErrorCode.DB_ERROR.name(), ex.getCause()));
     }

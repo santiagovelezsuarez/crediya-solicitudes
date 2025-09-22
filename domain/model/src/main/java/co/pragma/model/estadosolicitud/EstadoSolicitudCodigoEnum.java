@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 @Getter
 @RequiredArgsConstructor
-public enum EstadoSolicitudCodigo {
+public enum EstadoSolicitudCodigoEnum {
     PENDIENTE_REVISION(1),
     PENDIENTE_VALIDACION_AUTOMATICA(2),
     REVISION_MANUAL(3),
@@ -15,14 +15,14 @@ public enum EstadoSolicitudCodigo {
 
     private final int code;
 
-    public static EstadoSolicitudCodigo fromCode(int code) {
+    public static EstadoSolicitudCodigoEnum fromCode(int code) {
         return Arrays.stream(values())
                 .filter(e -> e.code == code)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Estado inválido: " + code));
     }
 
-    public static EstadoSolicitudCodigo fromCode(Integer code) {
+    public static EstadoSolicitudCodigoEnum fromCode(Integer code) {
         if (code == null) return null;
         return fromCode(code.intValue());
     }

@@ -2,6 +2,7 @@ package co.pragma.usecase.solicitud;
 
 import co.pragma.model.cliente.Cliente;
 import co.pragma.model.cliente.gateways.ClienteRepository;
+import co.pragma.model.estadosolicitud.EstadoSolicitudCodigoEnum;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
 import co.pragma.model.tipoprestamo.TipoPrestamo;
@@ -51,7 +52,7 @@ class ListarSolicitudesRevisionManualUseCaseTest {
                         .idTipoPrestamo(UUID.randomUUID())
                         .monto(new BigDecimal("10000.00"))
                         .plazoEnMeses(12)
-                        .estado(co.pragma.model.estadosolicitud.EstadoSolicitudCodigo.PENDIENTE_REVISION)
+                        .estado(EstadoSolicitudCodigoEnum.PENDIENTE_REVISION)
                         .build())
                 .toList();
 

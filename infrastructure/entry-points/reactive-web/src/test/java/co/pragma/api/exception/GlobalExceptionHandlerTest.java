@@ -1,6 +1,6 @@
 package co.pragma.api.exception;
 
-import co.pragma.api.adapters.ErrorCodeHttpMapper;
+import co.pragma.api.adapter.ErrorCodeHttpMapper;
 import co.pragma.api.dto.DtoValidationException;
 import co.pragma.api.dto.response.ErrorResponse;
 import co.pragma.exception.ErrorCode;

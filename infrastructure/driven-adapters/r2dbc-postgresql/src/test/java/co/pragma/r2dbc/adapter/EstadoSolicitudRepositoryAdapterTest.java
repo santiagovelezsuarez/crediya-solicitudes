@@ -3,7 +3,7 @@ package co.pragma.r2dbc.adapter;
 import co.pragma.exception.ErrorCode;
 import co.pragma.exception.InfrastructureException;
 import co.pragma.model.estadosolicitud.EstadoSolicitud;
-import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
+import co.pragma.model.estadosolicitud.EstadoSolicitudCodigoEnum;
 import co.pragma.r2dbc.entity.EstadoSolicitudEntity;
 import co.pragma.r2dbc.repository.EstadoSolicitudReactiveRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,11 +38,11 @@ class EstadoSolicitudRepositoryAdapterTest {
     void setUp() {
         entity = EstadoSolicitudEntity.builder()
                 .id(1)
-                .nombre(EstadoSolicitudCodigo.PENDIENTE_REVISION.name())
+                .nombre(EstadoSolicitudCodigoEnum.PENDIENTE_REVISION.name())
                 .build();
         domain = EstadoSolicitud.builder()
                 .id(1)
-                .nombre(EstadoSolicitudCodigo.PENDIENTE_REVISION)
+                .nombre(EstadoSolicitudCodigoEnum.PENDIENTE_REVISION)
                 .build();
     }
 

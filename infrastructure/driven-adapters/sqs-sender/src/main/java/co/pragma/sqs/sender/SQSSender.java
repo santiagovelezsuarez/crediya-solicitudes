@@ -1,6 +1,6 @@
 package co.pragma.sqs.sender;
 
-import co.pragma.sqs.sender.config.SqsQueuesProperties;
+import co.pragma.sns.publisher.SqsQueuesProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

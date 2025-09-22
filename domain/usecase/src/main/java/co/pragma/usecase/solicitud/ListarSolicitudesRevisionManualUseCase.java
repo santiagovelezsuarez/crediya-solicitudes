@@ -2,7 +2,7 @@ package co.pragma.usecase.solicitud;
 
 import co.pragma.model.cliente.Cliente;
 import co.pragma.model.cliente.gateways.ClienteRepository;
-import co.pragma.model.estadosolicitud.EstadoSolicitudCodigo;
+import co.pragma.model.estadosolicitud.EstadoSolicitudCodigoEnum;
 import co.pragma.model.solicitudprestamo.SolicitudPrestamo;
 import co.pragma.model.solicitudprestamo.gateways.SolicitudPrestamoRepository;
 import co.pragma.model.solicitudprestamo.projection.SolicitudPrestamoRevision;
@@ -23,9 +23,9 @@ public class ListarSolicitudesRevisionManualUseCase {
     private final ClienteRepository clienteRepository;
 
     private static final List<Integer> ESTADOS_REVISION = List.of(
-            EstadoSolicitudCodigo.PENDIENTE_REVISION.getCode(),
-            EstadoSolicitudCodigo.RECHAZADA.getCode(),
-            EstadoSolicitudCodigo.REVISION_MANUAL.getCode()
+            EstadoSolicitudCodigoEnum.PENDIENTE_REVISION.getCode(),
+            EstadoSolicitudCodigoEnum.RECHAZADA.getCode(),
+            EstadoSolicitudCodigoEnum.REVISION_MANUAL.getCode()
     );
 
     public Mono<List<SolicitudPrestamoRevision>> execute(int page, int size) {
@@ -75,7 +75,7 @@ public class ListarSolicitudesRevisionManualUseCase {
                 .monto(solicitud.getMonto())
                 .plazoEnMeses(solicitud.getPlazoEnMeses())
                 .tipoPrestamo(tipoPrestamo.getNombre())
-                .estado(EstadoSolicitudCodigo.valueOf(solicitud.getEstado().name()))
+                .estado(EstadoSolicitudCodigoEnum.valueOf(solicitud.getEstado().name()))
                 .tasaInteres(tipoPrestamo.getTasaInteres())
                 .emailCliente(cliente.getEmail())
                 .nombreCliente(cliente.getFullName())

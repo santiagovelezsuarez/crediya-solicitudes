@@ -1,6 +1,6 @@
 package co.pragma.api.exception;
 
-import co.pragma.api.adapters.ErrorCodeHttpMapper;
+import co.pragma.api.adapter.ErrorCodeHttpMapper;
 import co.pragma.api.dto.DtoValidationException;
 import co.pragma.api.dto.response.ErrorResponse;
 import co.pragma.exception.ErrorCode;
@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.*;
 import org.springframework.web.server.ServerWebInputException;
 import reactor.core.publisher.Mono;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -60,7 +61,7 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
         return buildResponse(ErrorContext.of(request, status, ex.getCode(), ex.getMessage()));
     }
 
-    private Mono<ServerResponse> handleSecurityException (ServerRequest request) {
+    private Mono<ServerResponse> handleSecurityException(ServerRequest request) {
         HttpStatus status = HttpStatus.FORBIDDEN;
         return buildResponse(ErrorContext.of(request, status, ErrorCode.FORBIDDEN));
     }
@@ -85,7 +86,7 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
         return buildResponse(ErrorContext.of(request, status, ErrorCode.INVALID_REQUEST));
     }
 
-    private Mono<ServerResponse>  handleDefaultException(ServerRequest request) {
+    private Mono<ServerResponse> handleDefaultException(ServerRequest request) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         return buildResponse(ErrorContext.of(request, status, ErrorCode.INTERNAL_SERVER_ERROR));
     }
